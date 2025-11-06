@@ -1,46 +1,51 @@
 import React, { useState } from 'react';
-import './App.css';
+import Message from './components/chat/message/Message';
+import ChatWindow from './components/chat/chat-window/ChatWindow';
 
-const MobileAppDemo = () => {
-  const [activeTab, setActiveTab] = useState('chats');
+const App = () => {
+
+  const [currentChat, setCurrentChat] = useState(null)
+
+  //mock data for testing
+  const mockCurrentUser = {
+    userId: "user1",
+    pseudonym: "You",
+    isOnline: true
+  }
+
+  const mockChat = {
+    chatId: "chat1",
+    participants: [
+      { userId: "user1", pseudonym: "You", isOnline: true},
+      { userId: "user2", pseudonym: "Chatterbox", isOnline: true},
+    ],
+    messages: []
+  }
 
   return (
-    <div className="mobile-app">
-      {/* Header */}
-      <div className="mobile-header">
-        <h1>Friend Chat</h1>
-      </div>
+    <div className="App">
+    <h2>Testing ChatWindow Header</h2>
+    <button
+      onClick={() => setCurrentChat(mockChat)}
+      style={{padding: "10px", margin: "10px"}}
+    >
+    Open Chat Window
+    </button>
 
-      {/* Content Area */}
-      <div className="mobile-content">
-        {activeTab === 'chats' && <div>Chat List Here</div>}
-        {activeTab === 'match' && <div>Matching Interface</div>}
-        {activeTab === 'home' && <div>Home Feed</div>}
-        {activeTab === 'lostfound' && <div>Lost & Found</div>}
-        {activeTab === 'profile' && <div>Profile Page</div>}
-      </div>
+    <button
+      onClick={() => setCurrentChat(null)}
+      style={{padding: "10px", margin: "10px"}}
+    >
+      Close Chat Window
+    </button>
 
-      {/* Bottom Navigation - JUST LIKE MOBILE APP */}
-      <div className="bottom-nav">
-        {['chats', 'match', 'home', 'lostfound', 'profile'].map(tab => (
-          <div 
-            key={tab}
-            className={`nav-item ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            <span className="nav-icon">
-              {tab === 'chats' && '💬'}
-              {tab === 'match' && '👥'} 
-              {tab === 'home' && '🏠'}
-              {tab === 'lostfound' && '🔍'}
-              {tab === 'profile' && '👤'}
-            </span>
-            <span className="nav-label">{tab}</span>
-          </div>
-        ))}
-      </div>
+      <ChatWindow
+        currentChat={currentChat}
+        currentUser={mockCurrentUser}
+        onBack={() => setCurrentChat(null)}
+      />
     </div>
-  );
-};
+  )
+}
 
-export default MobileAppDemo;
+export default App
