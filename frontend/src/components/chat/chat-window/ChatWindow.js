@@ -1,9 +1,10 @@
 //Individual chat interface
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Message from "../message/Message";
 import "./ChatWindow.css";
 
-const ChatWindow = ({ currentChat, currentUser, onBack }) => {
+const ChatWindow = ({ currentChat, currentUser, onBack, onSendMessage }) => {
+  const [newMessage, setNewMessage] = useState("")
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -14,6 +15,14 @@ const ChatWindow = ({ currentChat, currentUser, onBack }) => {
   useEffect(() => {
     scrollToBottom()
   }, [currentChat?.messages])
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (newMessage.trim()) {
+      onSendMessage(newMessage.trim());
+      setNewMessage(""); //clear input after sending
+    }
+  }
 
   //if no chat is selected, show a placeholder
   if (!currentChat) {
@@ -72,6 +81,26 @@ const ChatWindow = ({ currentChat, currentUser, onBack }) => {
         {/*invisible element to scroll to */}
         <div ref={messagesEndRef} />
       </div>
+
+      {/*message input */}
+      <form className="message-input-form" onSubmit={handleSendMessage}>
+        <div className="input-container">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="Type a message..."
+            className="message-input"
+          />
+          <button
+            type="submit"
+            className="send-button"
+            disabled={!newMessage.trim()}
+          >
+            Send
+            </button>
+        </div>
+      </form>
     </div>
   )
   

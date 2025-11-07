@@ -26,25 +26,29 @@ const App = () => {
         content: "Hey there! How are you doing?",
         timestamp: new Date(Date.now() - 300000), //5 minutes ago
         isRead: true
-      },
-      {
-        messageId: "msg2",
-        senderId: "user1",
-        content: "I'm good! Just working on our chat app.",
-        timestamp: new Date(Date.now() - 240000), //4 minutes ago
-        isRead: true
-      },
-      {
-        messageId: "msg3",
-        senderId: "user2",
-        content: "That's awesome! Can i test it?",
-        timestamp: new Date(Date.now() - 120000), //2 minutes ago
-        isRead: false
-      },
+      }
     ]
   }
 
-  
+  const handleSendMessage = (messageContent) => {
+    if (!currentChat) return;
+
+    const newMessage = {
+      messageId: `msg${Date.now()}`, //simple unique id
+      senderId: mockCurrentUser.userId,
+      content: messageContent,
+      timestamp: new Date(),
+      isRead: false
+    }
+
+    //update the chat with the new message
+    const updatedChat = {
+      ...currentChat,
+      messages: [...currentChat.messages, newMessage]
+    }
+
+    setCurrentChat(updatedChat)
+  }
 
   return (
     <div className="App">
@@ -60,6 +64,7 @@ const App = () => {
       currentChat={currentChat}
       currentUser={mockCurrentUser}
       onBack={() => setCurrentChat(null)}
+      onSendMessage={handleSendMessage}
     />
     </div>
   )

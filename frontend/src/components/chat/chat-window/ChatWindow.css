@@ -111,3 +111,44 @@
     font-size: 14px;
     color: #998
 }
+
+/*Message Input styles*/
+.message-input-form {
+    padding: 16px;
+    background-color: white;
+    border-top: 1px solid #e0e0e0;
+}
+
+.input-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.message-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 24px;
+    outline: none;
+    font-size: 14px;
+}
+
+.message-input:focus {
+    border-color: #00274C;
+}
+
+.send-button {
+    padding: 12px 24px;
+    background-color: #1d5487;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.send-button:hover:not(:disabled) {
+    background-color: #001a33;
+}
