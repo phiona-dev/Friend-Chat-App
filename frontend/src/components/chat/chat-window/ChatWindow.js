@@ -1,8 +1,20 @@
 //Individual chat interface
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import Message from "../message/Message";
 import "./ChatWindow.css";
 
 const ChatWindow = ({ currentChat, currentUser, onBack }) => {
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  //auto-scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom()
+  }, [currentChat?.messages])
+
   //if no chat is selected, show a placeholder
   if (!currentChat) {
     return (
@@ -41,11 +53,24 @@ const ChatWindow = ({ currentChat, currentUser, onBack }) => {
         </div>
       </div>
 
-      {/*messages and input added later */}
+      {/* messages container */}
       <div className="messages-container">
-        <p style={{padding: "20px", textAlign: "center", color: "#666"}}>
-          Messages will appear here
-        </p>
+        {currentChat.messages.length === 0 ? (
+          <div className="no-messages">
+            <p>No messages yet</p>
+            <span>Start the conversation by sending a message!</span>
+          </div>
+        ) : (
+          currentChat.messages.map(message => (
+            <Message
+              key={message.messageId}
+              message={message}
+              isOwn={message.senderId === currentUser.userId}
+            />
+          ))
+        )}
+        {/*invisible element to scroll to */}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   )

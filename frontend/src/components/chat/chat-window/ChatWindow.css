@@ -87,3 +87,27 @@
     flex: 1;
     background-color: #f8f9fa;
 }
+
+/*Messages container styles*/
+.messages-container {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+}
+
+.no-messages {
+    text-align: center;
+    padding: 40px 20px;
+    color: #667
+}
+
+.no-messages p {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.no-messages span {
+    font-size: 14px;
+    color: #998
+}
