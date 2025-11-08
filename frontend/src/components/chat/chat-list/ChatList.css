@@ -1,0 +1,244 @@
+.pending-matches-section {
+    background-color: white;
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.section-label {
+    margin-bottom: 12px;
+}
+
+.section-label span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #00274C
+}
+
+.pending-matches-list {
+    display: flex;
+    /*flex-direction: column;*/
+    gap: 12px
+}
+
+.pending-match-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0
+}
+
+.match-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD700, #FFA000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #00274C;
+    font-size: 18px;
+    margin-right: 12px;
+}
+
+.match-details {
+    flex: 1;
+}
+
+.match-name {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #00274C
+}
+
+.match-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.interest-tag {
+    font-size: 11px;
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.more-interests {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.match-bio {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: #667;
+    line-height: 1.3;
+}
+
+.match-actions {
+    display: flex;
+    gap: 8px
+}
+
+.reject-button, .accept-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.reject-button {
+    background-color: #dc3545;
+    color: white
+}
+
+.accept-button {
+    background-color: #f8f9fa;
+    color: #28a745;
+    border: 2px solid #28a745
+}
+
+.accept-button:hover {
+    background-color: #28a745;
+    color: white
+}
+
+/*Chats Section Label */
+.chats-section-label {
+    padding: 8p 16px;
+    background-color: #f8f9fa;
+}
+
+.chats-section-label span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #00274C
+}
+
+.chats-conatiner {
+    padding: 8px
+}
+
+.no-chats {
+    text-align: center;
+    padding: 40px 20px;
+    color: #667;
+}
+
+.no-chats p {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.no-chats span {
+    font-size: 14px;
+    color: #998
+}
+
+.chat-list-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: white;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.chat-list-item:hover {
+    background-color: #f8f9fa;
+}
+
+.use-avatar {
+    position: relative;
+    margin-right: 12px;
+}
+
+.avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD700, #FFA000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #00274C;
+    font-size: 18px;
+}
+
+.online-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    border: 2px solid white
+}
+
+.chat-info {
+    flex: 1
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.username {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #00274C
+}
+
+.timestamp {
+    font-size: 12px;
+    color: #998;
+}
+
+.message-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.last-message {
+    margin: 0;
+    font-size: 14px;
+    color: #667;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px
+}
+
+.unread-badge {
+    background-color: #00274C;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+}
