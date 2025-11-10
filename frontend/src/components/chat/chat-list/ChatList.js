@@ -68,7 +68,18 @@ const PendingMatchCard = ({ match, onAccept, onReject }) => {
     <div className="pending-match-card">
       <div className="match-profile-info">
         <div className="match-avatar">
-          {match.pseudonym.charAt(0).toUpperCase()}
+          <img
+            src={match.avatar}
+            alt={match.pseudonym}
+            onError={(e) => {
+              //if image fails to load
+              e.target.style.display = "none";
+              e.target.nextSibling.style.display = "flex";
+            }}
+          />
+          <div className="avatar-fallback">
+            {match.pseudonym.charAt(0).toUpperCase()}
+          </div>
         </div>
         <div className="match details">
           <h4 className="match-name">{match.pseudonym}</h4>

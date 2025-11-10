@@ -13,7 +13,8 @@ const App = () => {
   const mockCurrentUser = {
     userId: "user1",
     pseudonym: "You",
-    isOnline: true
+    isOnline: true,
+    avatar: "/avatars/user1.jpg"
   }
 
   const mockPendingMatches = [
@@ -22,21 +23,24 @@ const App = () => {
       pseudonym: "BookLover42",
       interests: ["Reading", "Technology", "Coffee", "Travel"],
       bio: "Love reading sci-fi and exploring new tech trends!",
-      timestamp: new Date(Date.now() - 3600000) //1 hour ago
+      timestamp: new Date(Date.now() - 3600000), //1 hour ago
+      avatar: "/avatars/booklover.jpg"
     },
     {
       matchId: "match2",
       pseudonym: "SportsFanatic",
       interests: ["Basketball", "Fitness", "Music"],
       bio: "Always up for a game of basketball or gym session",
-      timestamp: new Date(Date.now() - 7200000) //2 hours ago
+      timestamp: new Date(Date.now() - 7200000), //2 hours ago
+      avatar: "/avatars/sportsfanatic.jpg"
     },
     {
       matchId: "match3",
       pseudonym: "ArtExplorer",
       interests: ["Painting", "Museums", "Photography"],
       bio: "Contemporary art enthusiast and amateur photographer",
-      timestamp: new Date(Date.now() - 1800000) //1 hour ago
+      timestamp: new Date(Date.now() - 1800000), //1 hour ago
+      avatar: "/avatars/artexplorer.jpg"
     },
     
   ]
@@ -45,8 +49,18 @@ const App = () => {
     {
     chatId: "chat1",
     participants: [
-      { userId: "user1", pseudonym: "You", isOnline: true},
-      { userId: "user2", pseudonym: "Chatterbox", isOnline: true},
+      {
+        userId: "user1",
+        pseudonym: "You",
+        isOnline: true,
+        avatar: "/avatars/user1.jpg"
+      },
+      {
+        userId: "user2",
+        pseudonym: "Chatterbox", 
+        isOnline: true,
+        avatar: "/avatars/chatterbox.jpg"
+      },
     ],
     messages: [
       {
@@ -76,8 +90,18 @@ const App = () => {
     {
       chatId: 'chat2',
       participants: [
-        { userId: 'user1', pseudonym: 'You', isOnline: true },
-        { userId: 'user3', pseudonym: 'StudyBuddy', isOnline: false }
+        {
+          userId: 'user1',
+          pseudonym: 'You',
+          isOnline: true,
+          avatar: "/avatars/user1.jpg"
+        },
+        {
+          userId: 'user3',
+          pseudonym: 'StudyBuddy',
+          isOnline: false,
+          avatar: "/avatars/booklover.jpg"
+        }
       ],
       messages: [
         {
