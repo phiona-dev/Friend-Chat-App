@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChatWindow from './components/chat/chat-window/ChatWindow';
 import ChatList from './components/chat/chat-list/ChatList';
+import { chatAPI, matchingAPI } from './Services/api';
+import { socketService } from './Services/socket';
 
 const App = () => {
 
@@ -8,8 +10,11 @@ const App = () => {
   const [currentChat, setCurrentChat] = useState(null);
   const [chats, setChats] = useState([])
   const [pendingMatches, setPendingMatches] = useState([])
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   //mock data for testing
+  //will be replaced with real auth later
   const mockCurrentUser = {
     userId: "user1",
     pseudonym: "You",
@@ -17,6 +22,7 @@ const App = () => {
     avatar: "/avatars/user1.jpg"
   }
 
+  //will be replaced with real API later
   const mockPendingMatches = [
     {
       matchId: "match1",
@@ -43,9 +49,10 @@ const App = () => {
       avatar: "/avatars/artexplorer.jpg"
     },
     
-  ]
+  ];
 
-  const mockChats = [
+
+  /*const mockChats = [
     {
     chatId: "chat1",
     participants: [
@@ -115,101 +122,199 @@ const App = () => {
       unreadCount: 1
     }
   ]
+  
 
   //initialize state with mock data
   React.useEffect(() => {
     setChats(mockChats);
     setPendingMatches(mockPendingMatches)
+  }, []); */
+
+  //load user's chats from API
+  useEffect(() => {
+    const initializeApp = async () => {
+      await loadUserChats();
+      initializeSocket();
+      setPendingMatches(mockPendingMatches)
+    };
+    initializeApp();
   }, []);
 
-  const handleSelectChat = (chat) => {
-    setCurrentChat(chat);
-    setCurrentView("chatWindow");
+  const loadUserChats = async () => {
+    try {
+      setLoading(true);
+      const userChats = await chatAPI.getUserChats(mockCurrentUser.userId);
+      
+      console.log('Raw API response:', userChats); // Debug log
+      
+      // Transform the data to match frontend expectations
+      const transformedChats = userChats.map(chat => ({
+        _id: chat.chatId, // Map chatId to _id for frontend
+        chatId: chat.chatId, // Keep original too
+        participants: chat.participants,
+        lastMessage: chat.lastMessage,
+        unreadCount: chat.unreadCount || 0,
+        messages: [], // Will load when chat is opened
+        otherParticipant: chat.otherParticipant, // Keep this for easy access
+        updatedAt: chat.updatedAt,
+        createdAt: chat.createdAt
+      }));
+      
+      console.log('Transformed chats:', transformedChats); // Debug log
+      setChats(transformedChats);
+    } catch (err) {
+      setError("Failed to load chats");
+      console.error("Error loading chats:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    //mark messages are read when chat is selected
-    const updatedChats = chats.map(c => 
-      c.chatId === chat.chatId ? {
-        ...c,
-        unreadCount: 0,
-        messages: c.messages.map(m => ({ ...m, isRead: true }))
-      } : c
-    )
-    setChats(updatedChats)
+  const initializeSocket = () => {
+    const socket = socketService.connect();
+
+    //listen for new messages in real-time
+    socket.on("new_message", (message) => {
+      //if message is for the current chat, update it
+      if (currentChat && currentChat._id === message.chatId){
+        setCurrentChat(prev => ({
+          ...prev,
+          messages: [...prev.messages, message]
+        }));
+      }
+
+      //update the chat in the chats list
+      setChats(prev => prev.map(chat => 
+        chat._id === message.chatId ? {
+          ...chat,
+          lastMessage: {
+            content: message.content,
+            timestamp: message.timestamp,
+            senderId: message.senderId
+          },
+          updatedAt: new Date()
+        } : chat
+      ));
+    });
+  };
+
+  const handleSelectChat = async (chat) => {
+    try {
+      setLoading(true)
+      //load messages for this chat
+      const messages = await chatAPI.getChatMessages(chat._id);
+
+      //mark messages as read
+      await chatAPI.markMessagesAsRead(chat._id, mockCurrentUser.userId);
+
+      const chatWithMessages= {
+        ...chat,
+        messages: messages,
+        unreadCount: 0
+      };
+
+      setCurrentChat(chatWithMessages);
+      setCurrentView("chatWindow");
+
+      //join the chat room for real-time updates
+      setChats(prev => prev.map(c => c._id === chat._id ? { ...c, unreadCount: 0 } : c
+      ));
+    } catch (err) {
+      setError("Failed to load chat messages");
+      console.error("Error loading messages:", err);
+    } finally {
+      setLoading(false);
+    };
   }
 
-  const handleAcceptMatch = (match) => {
-    console.log("Accepted match:", match.pseudonym);
-
-    //remove from pending matches
-    const updatedPendingMatches = pendingMatches.filter(m => m.matchId !== match.matchId);
-    setPendingMatches(updatedPendingMatches);
-
-    //create a new chat with this match
-    const newChat = {
-      chatId: `chat-${Date.now()}`,
-      participants: [
-        { userId: "user1", pseudonym: "You", isOnline: true },
-        { userId: `user-${match.matchId}`, pseudonym: match.pseudonym, isOnline: true }
-      ],
-      messages: [
+  const handleAcceptMatch = async (match) => {
+    try {
+      //create a new chat with the accepted match
+      const newChat = await chatAPI.createChat(
         {
-          messageId: `msg-${Date.now()}`,
-          senderId: "system",
-          content: `You matched with ${match.pseudonym}! Start a conversation.`,
-          timestamp: new Date(),
-          isRead: true
+          userId: mockCurrentUser.userId,
+          pseudonym: mockCurrentUser.pseudonym,
+          avatar: mockCurrentUser.avatar
+        },
+        {
+          userId: `user-${match.matchId}`,
+          pseudonym: match.pseudonym,
+          avatar: match.avatar
         }
-      ],
-      unreadCount: 0
+      );
+
+      //remove from pending matches
+      setPendingMatches(prev => prev.filter(m => m.matchId !== match.matchId));
+
+      //add new chat to chats list
+      setChats(prev => [newChat, ...prev]);
+      alert(`You matched with ${match.pseudonym}! You can now chat with them.`);
+
+    } catch (err) {
+      setError("Failed to accept match");
+      console.error("Error accepting match:", err);
     }
-
-    //Add to chats list
-    setChats(prevChats => [...prevChats, newChat]);
-
-    alert(`You matched with ${match.pseudonym}! You can now chat with them.`)
   };
 
   const handleRejectMatch = (match) => {
-    console.log("Rejected match:", match.pseudonym);
-
     //remove from pending matches
-    const updatedPendingMatches = pendingMatches.filter(m => m.matchId !== match.matchId);
-    setPendingMatches(updatedPendingMatches);
+    setPendingMatches(prev => prev.filter(m => m.matchId !== match.matchId));
     alert(`You rejected ${match.pseudonym}`)
   }
 
-  const handleSendMessage = (messageContent) => {
+  const handleSendMessage = async (messageContent) => {
     if (!currentChat) return;
 
-    const newMessage = {
-      messageId: `msg${Date.now()}`, //simple unique id
-      senderId: mockCurrentUser.userId,
-      content: messageContent,
-      timestamp: new Date(),
-      isRead: false
+    try {
+      //send message via api
+      const newMessage = await chatAPI.sendMessage(
+        currentChat._id,
+        mockCurrentUser.userId,
+        messageContent
+      );
+
+      //real-time update will handle adding the message to the UI via the
+      //socket "new_message" event
+    } catch (err) {
+      setError("Failed to send message");
+      console.error("Error sending message:", err)
     }
+  };
 
-    //update the chat with the new message
-    const updatedChat = {
-      ...currentChat,
-      messages: [...currentChat.messages, newMessage],
-      unreadCount: 0
-    }
-
-    setCurrentChat(updatedChat)
-
-    //updated the chat in the chats list
-    const updatedChats = chats.map(chat => chat.chatId === currentChat.chatId ? updatedChat : chat);
-    setChats(updatedChats)
-  }
 
   const handleBackToList = () => {
+    if (currentChat) {
+      socketService.leaveChat(currentChat._id);
+    }
     setCurrentView("chatList");
     setCurrentChat(null);
   }
 
+  //cleanup socket on unmount
+  useEffect(() => {
+    return () => {
+      socketService.disconnect();
+    };
+  }, []);
+
+  if (loading && chats.length === 0) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Loading your chats...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
+      {error && (
+        <div className="error-banner">
+          {error}
+          <button onClick={() => setError(null)}>x</button>
+        </div>
+      )}
+      
       {currentView === "chatList" ? (
         <ChatList
           chats={chats}

@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 })
 
 //chat routes
-app.use("api/chats", require("./routes/chats"));
+app.use("/api/chats", require("./routes/chats"));
 
 //basic socket.io connection test
 io.on("connection", (socket) => {

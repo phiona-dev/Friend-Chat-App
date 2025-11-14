@@ -5,8 +5,10 @@ const Message = require("../models/Message");
 
 //GET /api/chats/:userId - get all chats for a user
 router.get("/:userId", async (req, res) => {
+    console.log('GET /api/chats called for user:', req.params.userId);
     try {
         const { userId } = req.params;
+        console.log('Looking for chats for user:', userId);
 
         //find all chats where the user is a participant
         const chats = await Chat.find({
