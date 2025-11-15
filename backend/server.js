@@ -23,6 +23,7 @@ connectDB();
 //middleware
 app.use(cors());
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 //basic route to test server
 app.get("/", (req, res) => {

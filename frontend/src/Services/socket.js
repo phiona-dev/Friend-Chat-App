@@ -9,7 +9,7 @@ class SocketService {
     connect() {
         if (this.socket) return this.socket;
 
-        this.socket = io("http://localhost: 5000", {
+        this.socket = io("http://localhost:5000", {
             transports: ["websocket"],
         });
 

@@ -91,7 +91,7 @@ router.post("/", async (req, res) => {
         const { participant1, participant2 } = req.body;
 
         //validate required fields
-        if (!participant1 || participant2) {
+        if (!participant1 || !participant2) {
             return res.status(400).json({ error: "Both participants are required" });
         }
 

@@ -120,36 +120,38 @@ const PendingMatchCard = ({ match, onAccept, onReject }) => {
 // chatlist item component (for accepted matches)
 const ChatListItem = ({ chat, currentUser, onSelect }) => {
   const otherUser = chat.participants.find(p => p.userId !== currentUser.userId);
-  const lastMessage = chat.messages[chat.messages.length - 1]
 
-return (
-  <div className="chat-list-item" onClick={() => onSelect(chat)}>
-    <div className="user-avatar">
-      <div className="avatar-placeholder">
-        {otherUser.pseudonym.charAt(0).toUpperCase()}
+  const messages = chat.messages || [];
+  const lastMessage = messages[messages.length - 1]
+
+  return (
+    <div className="chat-list-item" onClick={() => onSelect(chat)}>
+      <div className="user-avatar">
+        <div className="avatar-placeholder">
+          {otherUser.pseudonym.charAt(0).toUpperCase()}
+        </div>
+        {otherUser.isOnline && <div className="online-indicator"></div>}
       </div>
-      {otherUser.isOnline && <div className="online-indicator"></div>}
+
+      <div className="chat-info">
+        <div className="user-info">
+          <h3 className="username">{otherUser.pseudonym}</h3>
+          <span className="timestamp">
+            {lastMessage ? formatTime(lastMessage.timestamp) : ""}
+          </span>
+        </div>
+
+        <div className="message-preview">
+          <p className="last-message">
+            {lastMessage ? lastMessage.content : "Start a conversation..."}
+          </p>
+          {chat.unreadCount > 0 && (
+            <span className="unread-badge">{chat.unreadCount}</span>
+          )}
+        </div>
+      </div>
     </div>
-
-    <div className="chat-info">
-      <div className="user-info">
-        <h3 className="username">{otherUser.pseudonym}</h3>
-        <span className="timestamp">
-          {lastMessage ? formatTime(lastMessage.timestamp) : ""}
-        </span>
-      </div>
-
-      <div className="message-preview">
-        <p className="last-message">
-          {lastMessage ? lastMessage.content : "Start a conversation..."}
-        </p>
-        {chat.unreadCount > 0 && (
-          <span className="unread-badge">{chat.unreadCount}</span>
-        )}
-      </div>
-    </div>
-  </div>
-)
+  )
 }
 
 //helper function
