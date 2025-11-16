@@ -9,6 +9,8 @@ async function connectDB() {
 	await mongoose.connect(uri, {
 		autoIndex: true,
 	});
+	console.log('✅ MongoDB Connected to:', mongoose.connection.name);
+	console.log('📍 Database:', mongoose.connection.db.databaseName);
 	return mongoose.connection;
 }
 
