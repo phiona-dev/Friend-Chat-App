@@ -33,34 +33,6 @@ const App = () => {
     avatar: "/avatars/user1.jpg"
   }
 
-  //will be replaced with real API later
-  const mockPendingMatches = [
-    {
-      matchId: "match1",
-      pseudonym: "BookLover42",
-      interests: ["Reading", "Technology", "Coffee", "Travel"],
-      bio: "Love reading sci-fi and exploring new tech trends!",
-      timestamp: new Date(Date.now() - 3600000), //1 hour ago
-      avatar: "/avatars/booklover.jpg"
-    },
-    {
-      matchId: "match2",
-      pseudonym: "SportsFanatic",
-      interests: ["Basketball", "Fitness", "Music"],
-      bio: "Always up for a game of basketball or gym session",
-      timestamp: new Date(Date.now() - 7200000), //2 hours ago
-      avatar: "/avatars/sportsfanatic.jpg"
-    },
-    {
-      matchId: "match3",
-      pseudonym: "ArtExplorer",
-      interests: ["Painting", "Museums", "Photography"],
-      bio: "Contemporary art enthusiast and amateur photographer",
-      timestamp: new Date(Date.now() - 1800000), //1 hour ago
-      avatar: "/avatars/artexplorer.jpg"
-    },
-    
-  ];
 
   useEffect(() => {
 
@@ -74,12 +46,12 @@ const App = () => {
         // Transform the data to match frontend expectations
         const transformedChats = userChats.map(chat => ({
           _id: chat.chatId, // Map chatId to _id for frontend
-          chatId: chat.chatId, // Keep original too
+          chatId: chat.chatId, 
           participants: chat.participants,
           lastMessage: chat.lastMessage,
           unreadCount: chat.unreadCount || 0,
           messages: [], // Will load when chat is opened
-          otherParticipant: chat.otherParticipant, // Keep this for easy access
+          otherParticipant: chat.otherParticipant, 
           updatedAt: chat.updatedAt,
           createdAt: chat.createdAt
         }));
@@ -159,11 +131,17 @@ const App = () => {
     const initializeApp = async () => {
       await loadUserChats();
       initializeSocket();
-      setPendingMatches(mockPendingMatches)
+      try {
+        const serverMatches = await matchingAPI.getPendingMatches(mockCurrentUser.userId);
+        setPendingMatches(Array.isArray(serverMatches) ? serverMatches : []);
+      } catch (err) {
+        console.error('Failed to load pending matches', err);
+        setPendingMatches([]);
+      }
     };
     initializeApp();
     
-  }, [])
+  }, [mockCurrentUser.userId])
 
 
   const handleSelectChat = async (chat) => {
@@ -234,23 +212,66 @@ const App = () => {
 
       setChats(prev => [placeholderChat, ...prev]);
 
-      //call API to create chat; if it fails, rollback optimistic updates
-      let newChat = null;
+      // Ask server to accept the match and (if the server creates/returns a chat) use it.
       try {
-        newChat = await chatAPI.createChat(
-          {
-            userId: mockCurrentUser.userId,
-            pseudonym: mockCurrentUser.pseudonym,
-            avatar: mockCurrentUser.avatar
-          },
-          {
-            userId: `user-${match.matchId}`,
-            pseudonym: match.pseudonym,
-            avatar: match.avatar
+        const acceptRes = await matchingAPI.acceptMatch(match.matchId, mockCurrentUser.userId);
+
+        let finalChat = null;
+
+        if (acceptRes && acceptRes.chat) {
+          finalChat = acceptRes.chat;
+        } else {
+          // server didn't return a chat - fallback to creating one client-side
+          try {
+            finalChat = await chatAPI.createChat(
+              {
+                userId: mockCurrentUser.userId,
+                pseudonym: mockCurrentUser.pseudonym,
+                avatar: mockCurrentUser.avatar
+              },
+              {
+                userId: `user-${match.matchId}`,
+                pseudonym: match.pseudonym,
+                avatar: match.avatar
+              }
+            );
+          } catch (createErr) {
+            // rollback optimistic changes
+            setProcessedMatches(prev => {
+              const copy = new Set(prev);
+              copy.delete(match.matchId);
+              return copy;
+            });
+            setPendingMatches(prev => [match, ...prev]);
+            setChats(prev => prev.filter(c => c._id !== tempChatId));
+            setError('Failed to accept match (network)');
+            console.error('createChat failed:', createErr);
+            alert('Failed to accept match. Please try again.');
+            return;
           }
-        );
+        }
+
+        // Build transformed chat and replace placeholder, ensuring no duplicates
+        const transformedChat = {
+          _id: finalChat._id,
+          chatId: finalChat._id,
+          participants: finalChat.participants,
+          lastMessage: finalChat.lastMessage,
+          unreadCount: 0,
+          messages: [],
+          otherParticipant: finalChat.participants.find(p => p.userId !== mockCurrentUser.userId),
+          updatedAt: finalChat.updatedAt,
+          createdAt: finalChat.createdAt
+        };
+
+        setChats(prev => {
+          const filtered = prev.filter(c => c._id !== tempChatId && c._id !== transformedChat._id);
+          return [transformedChat, ...filtered];
+        });
+
+        alert(`You matched with ${match.pseudonym}! You can now chat with them.`);
       } catch (apiErr) {
-        // rollback
+        // rollback optimistic updates if accept endpoint failed
         setProcessedMatches(prev => {
           const copy = new Set(prev);
           copy.delete(match.matchId);
@@ -259,26 +280,10 @@ const App = () => {
         setPendingMatches(prev => [match, ...prev]);
         setChats(prev => prev.filter(c => c._id !== tempChatId));
         setError('Failed to accept match (network)');
-        console.error('createChat failed:', apiErr);
+        console.error('acceptMatch failed:', apiErr);
         alert('Failed to accept match. Please try again.');
         return;
       }
-
-      // Replace placeholder with actual chat returned by API
-      const transformedChat = {
-        _id: newChat._id,
-        chatId: newChat._id,
-        participants: newChat.participants,
-        lastMessage: newChat.lastMessage,
-        unreadCount: 0,
-        messages: [],
-        otherParticipant: newChat.participants.find(p => p.userId !== mockCurrentUser.userId),
-        updatedAt: newChat.updatedAt,
-        createdAt: newChat.createdAt
-      };
-
-      setChats(prev => prev.map(c => c._id === tempChatId ? transformedChat : c));
-      alert(`You matched with ${match.pseudonym}! You can now chat with them.`);
 
     } catch (err) {
       setError("Failed to accept match");
@@ -295,12 +300,25 @@ const App = () => {
         return;
       }
 
-      //mark match as processed
+      // Optimistically mark processed and remove from pending
       setProcessedMatches(prev => new Set([...prev, match.matchId]));
-
-      //remove from pending matches
       setPendingMatches(prev => prev.filter(m => m.matchId !== match.matchId));
-      alert(`You rejected ${match.pseudonym}`)
+
+      try {
+        await matchingAPI.rejectMatch(match.matchId, mockCurrentUser.userId);
+        alert(`You rejected ${match.pseudonym}`);
+      } catch (apiErr) {
+        // rollback
+        setProcessedMatches(prev => {
+          const copy = new Set(prev);
+          copy.delete(match.matchId);
+          return copy;
+        });
+        setPendingMatches(prev => [match, ...prev]);
+        setError('Failed to reject match (network)');
+        console.error('rejectMatch failed:', apiErr);
+        alert('Failed to reject match. Please try again.');
+      }
     } catch (err) {
       setError("Failed to reject match");
       console.error("Error rejecting match", err)

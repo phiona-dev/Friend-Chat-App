@@ -33,6 +33,9 @@ app.get("/", (req, res) => {
 //chat routes
 app.use("/api/chats", require("./routes/chats"));
 
+//matches route (pending matches, accept/reject)
+app.use("/api/matches", require("./routes/matches"));
+
 //basic socket.io connection test
 io.on("connection", (socket) => {
     console.log("User connected:", socket.id);

@@ -60,20 +60,20 @@ export const chatAPI = {
 
 export const matchingAPI = {
     getPendingMatches: async (userId) => {
-        //will be replaced with real API later
-        console.log("Getting pending matches for:", userId);
-        return [];
+        return await apiRequest(`/matches/${userId}`);
     },
 
     acceptMatch: async (matchId, userId) => {
-        //will be replaced with real api later
-        console.log("Accepting match:", matchId, "for user:", userId);
-        return { success: true };
+        return await apiRequest(`/matches/${matchId}/accept`, {
+            method: 'POST',
+            body: JSON.stringify({ userId })
+        });
     },
 
-    rejectMacth: async(matchId, userId) => {
-        //will be replaced with real api later
-        console.log("Rejecting match:", matchId, "for user:", userId);
-        return { success: true }
+    rejectMatch: async (matchId, userId) => {
+        return await apiRequest(`/matches/${matchId}/reject`, {
+            method: 'POST',
+            body: JSON.stringify({ userId })
+        });
     }
 }
