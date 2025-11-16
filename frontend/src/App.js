@@ -12,6 +12,8 @@ const App = () => {
   const [pendingMatches, setPendingMatches] = useState([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [typingUsers, setTypingUsers] = useState({})
 
   //mock data for testing
   //will be replaced with real auth later
@@ -113,9 +115,31 @@ const App = () => {
         ));
       });
 
+      //online status listener
+      socket.on("onlineUsers", (users) => {
+        setOnlineUsers(users);
+        console.log("Online users updated:", users);
+      });
+
+      //typing indicator listeners
+      socket.on("userTyping", (data) => {
+        setTypingUsers(prev => ({
+          ...prev,
+          [data.chatId]: [...(prev[data.chatId] || []).filter(id => id !== data.userId), data.userId]
+        }));
+      });
+
+      socket.on("userStopTyping", (data) => {
+        setTypingUsers(prev => ({
+          ...prev,
+          [data.chatId]: (prev[data.chatId] || []).filter(id => id !== data.userId)
+        }));
+      });
+
       //connection logging
       socket.on("connect", () => {
         console.log("Socket connected successfully")
+        socketService.setUserOnline(mockCurrentUser.userId)
       });
 
       socket.on("connect_error", (error) => {
@@ -235,6 +259,20 @@ const App = () => {
     setCurrentChat(null);
   }
 
+  const handdleTypingStart = () => {
+    if (currentChat) {
+      const chatIdentifier = currentChat.chatId || currentChat._id;
+      socketService.startTyping(chatIdentifier, mockCurrentUser.userId);
+    }
+  };
+
+  const handdleTypingStop = () => {
+    if (currentChat) {
+      const chatIdentifier = currentChat.chatId || currentChat._id;
+      socketService.stopTyping(chatIdentifier, mockCurrentUser.userId);
+    }
+  };
+
   //cleanup socket on unmount
   useEffect(() => {
     return () => {
@@ -268,6 +306,7 @@ const App = () => {
           onAcceptMatch={handleAcceptMatch}
           onRejectMatch={handleRejectMatch}
           currentUser={mockCurrentUser}
+          onlineUsers={onlineUsers}
         />
       ) : (
         <ChatWindow
@@ -275,6 +314,10 @@ const App = () => {
           currentUser={mockCurrentUser}
           onBack={handleBackToList}
           onSendMessage={handleSendMessage}
+          onTypingStart={handdleTypingStart}
+          onTypingStop={handdleTypingStop}
+          typingUsers={typingUsers[currentChat?.chatId || currentChat?._id] || []}
+          onlineUsers={onlineUsers}
         />
       )}
     </div>
