@@ -29,7 +29,7 @@ const ChatList = ({
                 key={match.matchId}
                 match={match}
                 onAccept={() => onAcceptMatch(match)}
-                onRejectMatch={() => onRejectMatch(match)}
+                onReject={() => onRejectMatch(match)}
               />
             ))}
           </div>
@@ -81,7 +81,7 @@ const PendingMatchCard = ({ match, onAccept, onReject }) => {
             {match.pseudonym.charAt(0).toUpperCase()}
           </div>
         </div>
-        <div className="match details">
+        <div className="match-details">
           <h4 className="match-name">{match.pseudonym}</h4>
           <div className="match-interests">
             {match.interests.slice(0, 3).map((interest, index) => (
