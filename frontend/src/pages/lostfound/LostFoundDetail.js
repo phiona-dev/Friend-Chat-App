@@ -10,6 +10,7 @@ export default function LostFoundDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+// Load item details
   useEffect(() => {
     async function load() {
       setLoading(true);
