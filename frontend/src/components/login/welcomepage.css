@@ -1,0 +1,84 @@
+/* Welcome Page Styles */
+.welcome-container {
+  min-height: 100vh;
+  /*: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.logo-container {
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.app-logo {
+  width: 50%; /* Adjust size as needed */
+  height: 50%; /* Adjust size as needed */
+  object-fit: contain; /* This maintains aspect ratio */
+  border-radius: 50%; /* Optional: makes it circular */
+}
+
+/* Alternative square logo style */
+.app-logo-square {
+  width: 120px;
+  height: auto; /* Maintain aspect ratio */
+  object-fit: contain;
+}
+
+.app-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.app-description {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.get-started-btn {
+  background-color: #1F94F9;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.get-started-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.get-started-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .welcome-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .app-title {
+    font-size: 2rem;
+  }
+  
+  .app-description {
+    font-size: 1rem;
+  }
+}

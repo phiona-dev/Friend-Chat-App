@@ -2,10 +2,14 @@
 import React from 'react';
 import ChatPage from './pages/ChatPage';
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LostFoundList from './pages/lostfound/LostFoundList';
 import LostFoundForm from './pages/lostfound/LostFoundForm';
 import LostFoundDetail from './pages/lostfound/LostFoundDetail';
+import VerificationPage from './components/login/verification';
+import logo from './logo.svg';
+import Welcomepage from './components/login/welcomepage';
+import LoginPage from './components/login/login';
   
 function App() {
   return (
@@ -14,7 +18,10 @@ function App() {
         {/*<NavBar />*/}
         <Routes>
           {/*<Route path="/" element={<HomePage />} />*/}
-          <Route path="/" element={<ChatPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/" element={<Welcomepage/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/verify" element={<VerificationPage/>}/>
           <Route path="/lost-found" element={<LostFoundList />} />
           <Route path="/lostfound/new" element={<LostFoundForm />} />
           <Route path="/lostfound/:id" element={<LostFoundDetail />} />
