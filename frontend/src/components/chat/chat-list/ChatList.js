@@ -123,7 +123,9 @@ const ChatListItem = ({ chat, currentUser, onSelect }) => {
   const otherUser = chat.participants.find(p => p.userId !== currentUser.userId);
 
   const messages = chat.messages || [];
-  const lastMessage = messages[messages.length - 1]
+  // prefer an explicit messages array (loaded when opening a chat),
+  // otherwise fall back to chat.lastMessage populated by the server
+  const lastMessage = (messages && messages.length) ? messages[messages.length - 1] : (chat.lastMessage || null);
 
   return (
     <div className="chat-list-item" onClick={() => onSelect(chat)}>
@@ -138,13 +140,13 @@ const ChatListItem = ({ chat, currentUser, onSelect }) => {
         <div className="user-info">
           <h3 className="username">{otherUser.pseudonym}</h3>
           <span className="timestamp">
-            {lastMessage ? formatTime(lastMessage.timestamp) : ""}
+            {lastMessage ? formatTime(lastMessage.timestamp || lastMessage.timestamp) : ""}
           </span>
         </div>
 
         <div className="message-preview">
           <p className="last-message">
-            {lastMessage ? lastMessage.content : "Start a conversation..."}
+            {lastMessage && lastMessage.content ? lastMessage.content : "Start a conversation..."}
           </p>
           {chat.unreadCount > 0 && (
             <span className="unread-badge">{chat.unreadCount}</span>
