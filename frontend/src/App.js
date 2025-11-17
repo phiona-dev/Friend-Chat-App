@@ -2,12 +2,12 @@
 import React from 'react';
 import ChatPage from './pages/ChatPage';
 import './App.css';
-import { BrowserRouter, Routes, Route, Link, Router, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import LostFoundList from './pages/lostfound/LostFoundList';
 import LostFoundForm from './pages/lostfound/LostFoundForm';
 import LostFoundDetail from './pages/lostfound/LostFoundDetail';
 
-function NavBar() {
+/*function NavBar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
   
@@ -55,9 +55,9 @@ function NavBar() {
       </div>
     </nav>
   );
-}
+}*/
 
-function HomePage() {
+/*function HomePage() {
   return (
     <div style={{
       maxWidth: '800px',
@@ -96,17 +96,17 @@ function HomePage() {
       </div>
     </div>
   );
-}
+}*/
 
 function App() {
   return (
     <BrowserRouter>
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-        <NavBar />
+      <div style={{ minHeight: '100vh' }}>
+        {/*<NavBar />*/}
         <Routes>
-          <Route path="/" element={<HomePage />} />
-             <Route path="/chat" element={<ChatPage />} />
-          <Route path="/lostfound" element={<LostFoundList />} />
+          {/*<Route path="/" element={<HomePage />} />*/}
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/lost-found" element={<LostFoundList />} />
           <Route path="/lostfound/new" element={<LostFoundForm />} />
           <Route path="/lostfound/:id" element={<LostFoundDetail />} />
         </Routes>
