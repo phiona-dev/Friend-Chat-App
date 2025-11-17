@@ -165,7 +165,7 @@ export default function LostFoundList() {
                   <div style={{
                     width: '100px',
                     height: '100px',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: '#667eea',
                     borderRadius: 'var(--radius)',
                     display: 'flex',
                     alignItems: 'center',

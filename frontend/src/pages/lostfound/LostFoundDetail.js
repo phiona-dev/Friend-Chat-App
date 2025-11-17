@@ -115,7 +115,7 @@ export default function LostFoundDetail() {
           <div style={{
             width: '100%',
             height: '400px',
-            background: `linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3)), url(${item.imageUrl})`,
+            background: `url(${item.imageUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }} />
