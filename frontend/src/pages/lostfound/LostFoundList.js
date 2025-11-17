@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import Navbar from '../../components/navigation/bottom-navbar';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
@@ -13,6 +13,9 @@ export default function LostFoundList() {
   const q = searchParams.get('q') || '';
   const status = searchParams.get('status') || '';
   const category = searchParams.get('category') || '';
+
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   useEffect(() => {
     async function load() {
@@ -66,7 +69,17 @@ export default function LostFoundList() {
           color: 'var(--gray-900)',
           marginBottom: '0.5rem'
         }}>Lost & Found</h2>
+        <Link to="/lostfound/new" style={{
+          padding: '0.5rem 1.25rem',
+          borderRadius: 'var(--radius)',
+          fontWeight: 600,
+          background: isActive('/lostfound/new') ? 'var(--primary)' : 'var(--primary-light)',
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+          + Report Item
+        </Link>
         <p style={{ color: 'var(--gray-600)', marginBottom: '1.5rem' }}>Report and track lost items on campus</p>
+
         
         <form onChange={onFilterChange} style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <input
