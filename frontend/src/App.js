@@ -1,5 +1,8 @@
+// src/App.js
+import React from 'react';
+import ChatPage from './pages/ChatPage';
 import './App.css';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Router, useLocation } from 'react-router-dom';
 import LostFoundList from './pages/lostfound/LostFoundList';
 import LostFoundForm from './pages/lostfound/LostFoundForm';
 import LostFoundDetail from './pages/lostfound/LostFoundDetail';
@@ -102,6 +105,7 @@ function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
+             <Route path="/chat" element={<ChatPage />} />
           <Route path="/lostfound" element={<LostFoundList />} />
           <Route path="/lostfound/new" element={<LostFoundForm />} />
           <Route path="/lostfound/:id" element={<LostFoundDetail />} />
@@ -112,3 +116,4 @@ function App() {
 }
 
 export default App;
+  

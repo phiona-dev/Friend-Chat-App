@@ -1,0 +1,40 @@
+.message {
+    display: flex;
+    margin-bottom: 16px;
+}
+
+.own-message {
+    justify-content: flex-end;
+}
+
+.other-message {
+    justify-content: flex-start;
+}
+
+.message-bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 18px;
+}
+
+.own-message .message-bubble {
+    background-color: #1a5389;
+    color: white;
+}
+
+.other-message .message-bubble {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.message-meta {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+}
+
+.message-status {
+    font-size: 12px;
+    opacity: 0.8
+}
