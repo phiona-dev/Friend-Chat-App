@@ -1,6 +1,7 @@
 //List of all conversations
 import React from 'react';
-import "./ChatList.css"
+import "./ChatList.css";
+import Navbar from '../../navigation/bottom-navbar';
 
 const ChatList = ({
   chats,
@@ -150,6 +151,7 @@ const ChatListItem = ({ chat, currentUser, onSelect }) => {
           )}
         </div>
       </div>
+      <Navbar/>
     </div>
   )
 }

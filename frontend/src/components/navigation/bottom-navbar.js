@@ -30,7 +30,7 @@ const Navbar = () => {
       id: 'chat',
       label: 'Chats',
       icon: '💬',
-      path: '/chat'
+      path: '/'
     },
     {
       id: 'profile',

@@ -95,12 +95,8 @@ const ChatWindow = ({
       try {
         await onSendMessage(messageContent);
         
-        // Remove optimistic message after a delay (real message should come via socket)
-        setTimeout(() => {
-          setOptimisticMessages(prev => 
-            prev.filter(msg => msg._id !== optimisticMessage._id)
-          );
-        }, 5000);
+        // Keep optimistic message; it will be replaced when real message arrives via socket
+        // or on next chat reload
         
       } catch (error) {
         // If sending fails, remove the optimistic message

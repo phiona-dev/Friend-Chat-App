@@ -14,7 +14,7 @@ function App() {
         {/*<NavBar />*/}
         <Routes>
           {/*<Route path="/" element={<HomePage />} />*/}
-          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/" element={<ChatPage />} />
           <Route path="/lost-found" element={<LostFoundList />} />
           <Route path="/lostfound/new" element={<LostFoundForm />} />
           <Route path="/lostfound/:id" element={<LostFoundDetail />} />

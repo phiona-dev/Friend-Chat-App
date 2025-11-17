@@ -3,7 +3,6 @@ import ChatWindow from '../components/chat/chat-window/ChatWindow';
 import ChatList from '../components/chat/chat-list/ChatList';
 import { chatAPI, matchingAPI } from '../Services/api';
 import { socketService } from '../Services/socket';
-import Navbar from '../components/navigation/bottom-navbar';
 
 
 const App = () => {
@@ -429,7 +428,6 @@ const App = () => {
           onlineUsers={onlineUsers}
         />
       )}
-      <Navbar />
     </div>
   )
 }
