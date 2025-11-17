@@ -1,0 +1,98 @@
+/* src/components/Navigation/BottomNav.css */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.bottom-nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 8px 0;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 60px;
+  opacity: 0.7;
+}
+
+.nav-item:hover {
+  background-color: #f5f5f5;
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.nav-item-active {
+  opacity: 1;
+  background-color: #f0f7ff;
+}
+
+.nav-item-active .nav-icon {
+  transform: scale(1.1);
+}
+
+.nav-item-active .nav-label {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+  transition: transform 0.3s ease;
+}
+
+.nav-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .bottom-nav-container {
+    padding: 6px 0;
+  }
+  
+  .nav-item {
+    padding: 6px 8px;
+    min-width: 50px;
+  }
+  
+  .nav-icon {
+    font-size: 1.3rem;
+  }
+  
+  .nav-label {
+    font-size: 0.7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    max-width: 500px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 20px 20px 0 0;
+    margin-bottom: 10px;
+  }
+}
