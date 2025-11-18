@@ -10,6 +10,7 @@ import VerificationPage from './components/login/verification';
 import Welcomepage from './components/login/welcomepage';
 import LoginPage from './components/login/login';
 import CreateProfilePage from './components/create-profile/createProfile';
+import ProfilePage from './components/create-profile/profilePage';
   
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/verify" element={<VerificationPage/>}/>
           <Route path="/create-profile" element={<CreateProfilePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/lost-found" element={<LostFoundList />} />
           <Route path="/lostfound/new" element={<LostFoundForm />} />
           <Route path="/lostfound/:id" element={<LostFoundDetail />} />
