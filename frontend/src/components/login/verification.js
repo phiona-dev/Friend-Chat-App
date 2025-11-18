@@ -46,7 +46,7 @@ const VerificationPage = () => {
 
       alert("Verification successful! Redirecting...");
 
-      navigate('/welcome');
+      navigate('/create-profile');
     } catch (err) {
       setError('Error saving user data. Please try again.');
     } finally {

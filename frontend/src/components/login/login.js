@@ -23,9 +23,9 @@ const LoginPage = () => {
     const getErrorMessage = (errorCode) => {
     switch (errorCode) {
       case "auth/email-already-in-use":
-        return "Email alrady regestered";
+        return "Email already registered";
       case "auth/invalid-email":
-        return "Invalid email address or formart";
+        return "Invalid email address or format";
       case "auth/weak-password":
         return "Password should be at least 6 characters!";
       default:

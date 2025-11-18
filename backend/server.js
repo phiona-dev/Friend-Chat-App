@@ -37,6 +37,7 @@ app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use('/api/lostfound', require('./routes/lostfound'));
 app.use('/api/chats', require('./routes/chats'));
 app.use('/api/matches', require('./routes/matches'));
+app.use('/api/users', require('./routes/user'));
 
 // Socket.io connection handler
 io.on("connection", (socket) => {
