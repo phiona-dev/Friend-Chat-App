@@ -17,7 +17,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [, setUserId] = useState("");
 
-
+  //strong password regex
+  const isStrongPassword = (password) => {
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    return strongPasswordRegex.test(password);
+  }
   
   //Custom error messages
     const getErrorMessage = (errorCode) => {
@@ -42,6 +46,13 @@ const LoginPage = () => {
     // Basic validation
     if (!email || !password) {
       setError('Please fill in all fields');
+      setLoading(false);
+      return;
+    }
+
+    //Strong password check
+    if (!isStrongPassword(password)) {
+      setError('Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.');
       setLoading(false);
       return;
     }
