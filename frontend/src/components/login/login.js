@@ -73,17 +73,31 @@ const LoginPage = () => {
       const newCode = Math.floor(100000 + Math.random() * 900000).toString();
       console.log("Generated code:", newCode);
 
+      //adding expiry time of 15 minutes
+      const expiryMinutes = 15;
+      const expiresAt = new Date(Date.now() + expiryMinutes * 60000);
+
+      //readable time.
+      const expiryTimeFormatted = expiresAt.toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' });
+
       //save code in Firestore
       await setDoc(doc(db, "VerificationCodes", uid), {
         code: newCode,
         createdAt: new Date(),
+        expiresAt: expiresAt
       });
 
       // Send code via email
       await emailjs.send(
         "service_5wdkx74",
         "template_f7nvm99",
-        { to_email: email, passcode: newCode },
+        { to_email: email, 
+          passcode: newCode,
+          time: expiryTimeFormatted,
+          expiry_time: `${expiryMinutes} minutes`,
+        },
         "ohkQhougF79J5H3ER"
       );
 
