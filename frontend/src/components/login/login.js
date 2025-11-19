@@ -38,7 +38,7 @@ const LoginPage = () => {
   };
 
 
-  const handleLogin = async (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -129,7 +129,7 @@ const LoginPage = () => {
         
         {error && <div className="error-message">{error}</div>}
         
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSignIn}>
           <div className="form-group">
             <label htmlFor="email">USIU Email Address</label>
             <input
