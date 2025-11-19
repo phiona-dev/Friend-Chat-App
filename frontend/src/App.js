@@ -11,6 +11,7 @@ import Welcomepage from './components/login/welcomepage';
 import LoginPage from './components/login/login';
 import CreateProfilePage from './components/create-profile/createProfile';
 import ProfilePage from './components/create-profile/profilePage';
+import MatchingPage from './components/match/match';
   
 function App() {
   return (
@@ -19,12 +20,13 @@ function App() {
         {/*<NavBar />*/}
         <Routes>
           {/*<Route path="/" element={<HomePage />} />*/}
-          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/chats" element={<ChatPage />} />
           <Route path="/" element={<Welcomepage/>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/verify" element={<VerificationPage/>}/>
           <Route path="/create-profile" element={<CreateProfilePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/matching" element={<MatchingPage />} />
           <Route path="/lost-found" element={<LostFoundList />} />
           <Route path="/lostfound/new" element={<LostFoundForm />} />
           <Route path="/lostfound/:id" element={<LostFoundDetail />} />

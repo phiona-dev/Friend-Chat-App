@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Chat = require('../models/Chat');
 const Message = require('../models/Message');
+const User = require('../models/User');
+const { getMatchedUsers } = require('../utils/matchingAlgorithm');
 
 // In-memory store for demo pending matches per user (not persistent)
 // In a real app this would be a DB collection (e.g., Match model)
@@ -44,12 +46,31 @@ const ensureSeedForUser = (userId) => {
 router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    ensureSeedForUser(userId);
-    const matches = pendingMatchesStore.get(userId) || [];
-    res.json(matches);
+
+    // Get current user's profile
+    const currentUser = await User.findOne({ userId });
+    if (!currentUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Get all other users
+    const allUsers = await User.find({ userId: { $ne: userId } });
+
+    // Calculate matches
+    const matches = getMatchesForUser(currentUser, allUsers);
+
+    // Return match profiles
+    res.json(matches.map(match => ({
+      matchId: match._id.toString(),
+      userId: match.userId,
+      pseudonym: match.pseudonym,
+      avatar: match.avatar,
+      about: match.about,
+      interests: match.interests,
+      similarityScore: match.similarityScore
+    })));
   } catch (err) {
-    console.error('Error fetching pending matches:', err);
-    res.status(500).json({ error: 'Failed to fetch pending matches' });
+    res.status(500).json({ message: 'Failed to get matches', error: err.message });
   }
 });
 
