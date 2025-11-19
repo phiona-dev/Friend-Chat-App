@@ -12,12 +12,13 @@ import LoginPage from './components/login/login';
 import CreateProfilePage from './components/create-profile/createProfile';
 import ProfilePage from './components/create-profile/profilePage';
 import MatchingPage from './components/match/match';
+import StartupRedirect from './components/auth/StartupRedirect';
   
 function App() {
   return (
     <BrowserRouter>
       <div style={{ minHeight: '100vh' }}>
-        {/*<NavBar />*/}
+        <StartupRedirect/>
         <Routes>
           {/*<Route path="/" element={<HomePage />} />*/}
           <Route path="/chats" element={<ChatPage />} />
