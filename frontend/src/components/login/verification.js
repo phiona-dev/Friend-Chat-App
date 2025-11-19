@@ -39,6 +39,9 @@ const VerificationPage = () => {
         createdAt: new Date(),
       });
 
+      // persist the anonymous id locally so returning users are detected
+      localStorage.setItem('currentUserId', anonymousID);
+
       await setDoc(doc(db, "Users", anonymousID), {
         nickname: "User" + anonymousID.slice(0, 7),
         verifiedAt: new Date(),

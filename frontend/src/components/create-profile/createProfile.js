@@ -39,21 +39,23 @@ export default function CreateProfilePage() {
 
     setLoading(true);
     try {
-      const userId = 'user1'; // Use actual authenticated user ID
+      // Prefer the anonymous id saved during verification
+      const savedUserId = localStorage.getItem('currentUserId');
+      const userId = savedUserId || 'user1'; // fallback for development
+
       await userAPI.createProfile({
         userId,
         pseudonym,
         interests: selected,
       });
 
-      // Save to localStorage
-      localStorage.setItem('currentUserProfile', JSON.stringify({
-        userId,
-        pseudonym,
-        interests: selected,
-      }));
+      // Save profile locally so next app open goes straight to /chats
+      const profileObj = { userId, pseudonym, interests: selected };
+      localStorage.setItem('currentUserProfile', JSON.stringify(profileObj));
+      localStorage.setItem('currentUserId', userId);
 
-      navigate('/profile');
+      // After profile completion, go to chats
+      navigate('/chats');
     } catch (err) {
       setError(err.message || 'Failed to save profile');
     } finally {
