@@ -77,3 +77,18 @@ export const matchingAPI = {
         });
     }
 }
+
+export const userAPI = {
+  // Create or update user profile
+  createProfile: async (profileData) => {
+    return await apiRequest('/users', {
+      method: 'POST',
+      body: JSON.stringify(profileData),
+    });
+  },
+
+  // Get user profile by userId
+  getProfile: async (userId) => {
+    return await apiRequest(`/users/${userId}`);
+  },
+};

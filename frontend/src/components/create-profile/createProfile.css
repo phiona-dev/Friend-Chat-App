@@ -1,0 +1,69 @@
+.create-profile-page {
+  max-width: 480px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  padding: 2rem;
+}
+.create-profile-page h2 {
+     margin-bottom: 1.5rem; }
+.create-profile-page label {
+    display: block;
+    margin-bottom: 1.25rem; 
+}
+.create-profile-page input[type='text'] {
+  width: 100%; 
+  padding: 0.6rem; 
+  border-radius: 8px; 
+  border: 1px solid #ddd; 
+  font-size: 1.1rem;
+}
+.hint {
+    color: #666; 
+    font-size: 0.95rem; 
+    margin-bottom: 1.25rem; 
+}
+.interests-list {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 0.5rem; 
+    margin-top: 0.5rem;
+}
+.interests-list button {
+  border: 1px solid #bbb; 
+  border-radius: 20px; 
+  padding: 0.4rem 1rem; 
+  background: #a58686; cursor: pointer;
+  font-size: 1rem; 
+  transition: background 0.2s, border 0.2s;
+}
+.interests-list button.selected {
+  background: #2d6cdf; 
+  color: #fff; 
+  border-color: #2d6cdf;
+}
+.why-anonymity {
+  background: #f0f4ff; 
+  border-radius: 8px; 
+  padding: 1rem; margin: 1.5rem 0;
+}
+.why-anonymity h4 {
+    margin: 0 0 0.5rem 0; 
+}
+.error {
+    color: #c00; 
+    margin-bottom: 1rem; 
+}
+.complete-btn {
+  width: 100%; 
+  background: #2d6cdf; 
+  color: #fff; 
+  border: none; 
+  border-radius: 8px;
+  padding: 0.75rem; 
+  font-size: 1.1rem; 
+  font-weight: 600; 
+  margin-top: 1rem; 
+  cursor: pointer;
+}
