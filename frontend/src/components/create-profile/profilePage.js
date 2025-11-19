@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './profilePage.css';
 import { userAPI } from '../../Services/api';
+import Navbar from '../navigation/bottom-navbar';
 
 const STORAGE_KEY = 'currentUserProfile';
 
@@ -189,6 +190,7 @@ export default function ProfilePage() {
           <p className="muted">Recent chats and interactions will appear here.</p>
         </div>
       </div>
+      <Navbar/>
     </div>
   );
 }

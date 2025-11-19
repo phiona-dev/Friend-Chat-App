@@ -34,6 +34,10 @@ const VerificationPage = () => {
     try {
       const anonymousID = uuidv4();
 
+      
+      // persist the anonymous id locally so returning users are detected
+      localStorage.setItem('currentUserId', anonymousID);
+
       await setDoc(doc(db, "UserMap", uid), {
         anonymousID,
         createdAt: new Date(),

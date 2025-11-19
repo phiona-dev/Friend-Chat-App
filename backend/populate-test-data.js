@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
+const User = require('./models/User');
 
 const populateTestData = async () => {
   try {
@@ -31,7 +32,7 @@ const populateTestData = async () => {
         {
           userId: 'user2',
           pseudonym: 'ChatterBox',
-          avatar: '/avatars/user2.jpg',
+          avatar: '/avatars/user2.png',
           isOnline: true
         }
       ]
@@ -77,7 +78,7 @@ const populateTestData = async () => {
         {
           userId: 'user3',
           pseudonym: 'StudyBuddy',
-          avatar: '/avatars/user3.jpg',
+          avatar: '/avatars/user3.png',
           isOnline: false
         }
       ]
@@ -109,9 +110,76 @@ const populateTestData = async () => {
     const messageCount = await Message.countDocuments();
     console.log(`Total chats: ${chatCount}, Total messages: ${messageCount}`);
 
+    // --- seed demo users (always run, don't catch errors) ---
+    console.log('\nSeeding demo users...');
+    const demoUsers = [
+      {
+        userId: 'user2',
+        pseudonym: 'StarGazer',
+        email: 'stargazer@example.com',
+        about: 'Future innovator with a passion for coding and community impact',
+        interests: ['Coding', 'AI', 'Volunteering', 'Gaming'],
+        avatar: '/avatars/user2.png'
+      },
+      {
+        userId: 'user3',
+        pseudonym: 'CampusHero',
+        email: 'campushero@example.com',
+        about: 'Study group leader and campus volunteer',
+        interests: ['Volunteering', 'Debate', 'Business'],
+        avatar: '/avatars/user3.png'
+      },
+      {
+        userId: 'user4',
+        pseudonym: 'CodeNinja',
+        email: 'codeninja@example.com',
+        about: 'Competitive coder and open-source contributor',
+        interests: ['Coding', 'AI', 'Science'],
+        avatar: '/avatars/user4.png'
+      },
+      {
+        userId: 'user5',
+        pseudonym: 'ArtisticAmy',
+        email: 'amy@example.com',
+        about: 'Artist who loves photography and film',
+        interests: ['Art & Design', 'Photography', 'Film & TV'],
+        avatar: '/avatars/user5.png'
+      },
+      {
+        userId: 'user6',
+        pseudonym: 'GamerGal',
+        email: 'gamer@example.com',
+        about: 'Casual gamer and event organizer',
+        interests: ['Gaming', 'Music', 'Food & Cooking'],
+        avatar: '/avatars/user6.png'
+      },
+      {
+        userId: 'user7',
+        pseudonym: 'TravelerTom',
+        email: 'tom@example.com',
+        about: 'Backpacker and food enthusiast',
+        interests: ['Travel', 'Food & Cooking', 'Photography'],
+        avatar: '/avatars/user7.png'
+      }
+    ];
+
+    for (const u of demoUsers) {
+      try {
+        await User.findOneAndUpdate(
+          { userId: u.userId },
+          { $set: u },
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+        console.log('✅ Upserted user:', u.userId);
+      } catch (err) {
+        console.error('❌ Failed to upsert user', u.userId, err.message);
+      }
+    }
+
+    console.log('Demo users seeded successfully!');
+
   } catch (error) {
     console.error('❌ Error creating test data:', error);
-  } finally {
     mongoose.connection.close();
   }
 };
