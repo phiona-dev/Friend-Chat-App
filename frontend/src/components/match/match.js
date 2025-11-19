@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-//import './ProfilesPage.css';
+import './match.css';
 import { matchingAPI } from '../../Services/api';
 import Navbar from "../navigation/bottom-navbar"
 
@@ -18,6 +18,9 @@ export default function MatchingPage() {
       return new Set();
     }
   });
+  const [swipeClass, setSwipeClass] = useState('');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const SWIPE_ANIM_MS = 320; // duration must match CSS transition
 
   // Load profiles on mount
   useEffect(() => {
@@ -65,6 +68,24 @@ export default function MatchingPage() {
     moveToNext();
   };
 
+  // Swipe handler: animates then moves to next without marking processed
+  const handleSwipe = (direction = 'left') => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setSwipeClass(`swipe-${direction}`);
+    setTimeout(() => {
+      setSwipeClass('');
+      setIsAnimating(false);
+      moveToNext();
+    }, SWIPE_ANIM_MS);
+  };
+
+  // Navigate back to previous profile
+  const handleBack = () => {
+    if (isAnimating) return;
+    setCurrentIndex(prev => Math.max(0, prev - 1));
+  };
+
   const moveToNext = () => {
     setCurrentIndex(prev => prev + 1);
   };
@@ -83,6 +104,9 @@ export default function MatchingPage() {
         <div className="no-profiles">
           <h2>No more profiles!</h2>
           <p>You've reviewed all available matches. Check back later for new profiles.</p>
+          <button className="back-btn" onClick={handleBack} disabled={isAnimating || currentIndex === 0} aria-label="Back">
+              Back
+          </button>
         </div>
         <Navbar />
       </div>
@@ -97,7 +121,7 @@ export default function MatchingPage() {
         <h1>Profiles</h1>
 
         {/* Profile Card */}
-        <div className="profile-card">
+        <div className={`profile-card ${swipeClass}`}>
           {/* Avatar Section */}
           <div className="profile-avatar">
             {currentProfile.avatar ? (
@@ -127,10 +151,16 @@ export default function MatchingPage() {
 
           {/* Action Buttons */}
           <div className="actions">
-            <button className="reject-btn" onClick={handleReject}>
+            <button className="back-btn" onClick={handleBack} disabled={isAnimating || currentIndex === 0} aria-label="Back">
+              Back
+            </button>
+            <button className="reject-btn" onClick={handleReject} disabled={isAnimating}>
               Reject
             </button>
-            <button className="accept-btn" onClick={handleAccept}>
+            <button className="swipe-btn" onClick={() => handleSwipe('left')} disabled={isAnimating} aria-label="Swipe">
+              Swiping
+            </button>
+            <button className="accept-btn" onClick={handleAccept} disabled={isAnimating}>
               Accept
             </button>
           </div>

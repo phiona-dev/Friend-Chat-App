@@ -3,7 +3,7 @@ const router = express.Router();
 const Chat = require('../models/Chat');
 const Message = require('../models/Message');
 const User = require('../models/User');
-const { getMatchedUsers } = require('../utils/matchingAlgorithm');
+const { getMatchesForUser } = require('../utils/matchingAlgorithm');
 
 // In-memory store for demo pending matches per user (not persistent)
 // In a real app this would be a DB collection (e.g., Match model)
@@ -47,28 +47,42 @@ router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Get current user's profile
-    const currentUser = await User.findOne({ userId });
+    // Get current user's profile (use .lean() to return plain object)
+    const currentUser = await User.findOne({ userId }).lean();
     if (!currentUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
     // Get all other users
-    const allUsers = await User.find({ userId: { $ne: userId } });
+    const allUsers = await User.find({ userId: { $ne: userId } }).lean();
 
     // Calculate matches
     const matches = getMatchesForUser(currentUser, allUsers);
 
+    // Debug/logging to help diagnose runtime issues
+    console.log(`Matches computed for ${userId}:`, Array.isArray(matches) ? matches.length : typeof matches);
+    if (Array.isArray(matches) && matches.length > 0) {
+      console.log('Sample match object:', JSON.stringify(matches[0], null, 2));
+    }
+
     // Return match profiles
-    res.json(matches.map(match => ({
-      matchId: match._id.toString(),
-      userId: match.userId,
-      pseudonym: match.pseudonym,
-      avatar: match.avatar,
-      about: match.about,
-      interests: match.interests,
-      similarityScore: match.similarityScore
-    })));
+    const response = (Array.isArray(matches) ? matches : []).map(match => {
+      const matchId = (match && match._id && typeof match._id.toString === 'function')
+        ? match._id.toString()
+        : (match && match.userId) || `match-${Math.random().toString(36).slice(2,9)}`;
+
+      return {
+        matchId,
+        userId: match && match.userId,
+        pseudonym: match && match.pseudonym,
+        avatar: (match && match.avatar) || '/avatars/user1.jpg',
+        about: (match && match.about) || '',
+        interests: Array.isArray(match && match.interests) ? match.interests : [],
+        similarityScore: (match && match.similarityScore) || 0
+      };
+    });
+
+    res.json(response);
   } catch (err) {
     res.status(500).json({ message: 'Failed to get matches', error: err.message });
   }
