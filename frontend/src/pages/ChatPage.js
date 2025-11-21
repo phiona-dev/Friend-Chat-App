@@ -343,6 +343,20 @@ const App = () => {
       //use chatId if available, otherwise _id
       const chatIdentifier = currentChat.chatId || currentChat._id;
 
+      //optimistic update: update chatlist immediately
+      setChats(prevChats => prevChats.map(chat => (chat.chatId === chatIdentifier || chat._id === chatIdentifier)
+      ? {
+        ...chat,
+        lastMessage: {
+          content: messageContent,
+          timestamp: new Date(),
+          senderId: mockCurrentUser.userId
+        },
+          updatedAt: new Date()
+        }
+        : chat
+      ));
+
       //send message via api
       await chatAPI.sendMessage(
         chatIdentifier,
@@ -353,6 +367,14 @@ const App = () => {
       //real-time update will handle adding the message to the UI via the
       //socket "new_message" event
     } catch (err) {
+      //rollback optimistic update on error
+      setChats(prevChats => prevChats.map(chat => (chat.chatId === currentChat.chatId || chat._id === currentChat._id)
+      ? {
+        ...chat,
+        lastMessage: currentChat.lastMessage,
+      }
+      : chat
+      ));
       setError("Failed to send message");
       console.error("Error sending message:", err)
     }

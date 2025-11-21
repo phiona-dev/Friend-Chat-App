@@ -102,8 +102,8 @@ const populateTestData = async () => {
     };
     await chat2.save();
 
-    console.log('✅ Test data created successfully!');
-    console.log('📝 Created 2 chats with messages');
+    console.log('Test data created successfully!');
+    console.log('Created 2 chats with messages');
     
     // Verify the data
     const chatCount = await Chat.countDocuments();

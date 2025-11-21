@@ -59,6 +59,7 @@ const ChatList = ({
           ))
         )}
       </div>
+      <Navbar/>
     </div>
   )
 }
@@ -84,6 +85,9 @@ const PendingMatchCard = ({ match, onAccept, onReject }) => {
         </div>
         <div className="match-details">
           <h4 className="match-name">{match.pseudonym}</h4>
+            {match.about && (
+              <p className="match-bio">{match.about}</p>
+            )}
           <div className="match-interests">
             {match.interests.slice(0, 3).map((interest, index) => (
               <span key={index} className="interest-tag">#{interest}</span>
@@ -92,9 +96,6 @@ const PendingMatchCard = ({ match, onAccept, onReject }) => {
               <span className="more-interests">+{match.interests.length - 3} more</span>
             )}
           </div>
-          {match.about && (
-            <p className="match-bio">{match.about}</p>
-          )}
         </div>
       </div>
 
@@ -130,8 +131,19 @@ const ChatListItem = ({ chat, currentUser, onSelect }) => {
   return (
     <div className="chat-list-item" onClick={() => onSelect(chat)}>
       <div className="user-avatar">
-        <div className="avatar-placeholder">
-          {otherUser.pseudonym.charAt(0).toUpperCase()}
+        <div className="user-match-avatar">
+          <img
+            src={otherUser.avatar}
+            alt={otherUser.pseudonym}
+            onError={(e) => {
+              // if image fails to load
+              e.target.style.display = "none";
+              e.target.nextSibling.style.display = "flex";
+            }}
+          />
+          <div className="avatar-fallback">
+            {otherUser.pseudonym.charAt(0).toUpperCase()}
+          </div>
         </div>
         {otherUser.isOnline && <div className="online-indicator"></div>}
       </div>
@@ -153,10 +165,10 @@ const ChatListItem = ({ chat, currentUser, onSelect }) => {
           )}
         </div>
       </div>
-      <Navbar/>
     </div>
   )
 }
+
 
 //helper function
 const formatTime = (timestamp) => {
