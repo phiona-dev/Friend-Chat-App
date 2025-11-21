@@ -1,7 +1,15 @@
 // src/components/Navigation/BottomNav.js
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import "./bottom-navbar.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import "./bottom-navbar.css";
+import { 
+  faHeart, 
+  faEdit, 
+  faSearch, 
+  faComments, 
+  faUser 
+} from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
   const location = useLocation();
@@ -11,31 +19,31 @@ const Navbar = () => {
     {
       id: 'matching',
       label: 'Matching',
-      icon: '💕',
+      icon: faHeart,
       path: '/matching'
     },
     {
       id: 'posts',
       label: 'Posts',
-      icon: '📝',
+      icon: faEdit,
       path: '/posts'
     },
     {
       id: 'lost-found',
       label: 'Lost & Found',
-      icon: '🔍',
+      icon: faSearch,
       path: '/lost-found'
     },
     {
       id: 'chat',
       label: 'Chats',
-      icon: '💬',
+      icon: faComments,
       path: '/chats'
     },
     {
       id: 'profile',
       label: 'Profile',
-      icon: '👤',
+      icon: faUser,
       path: '/profile'
     }
   ];
@@ -54,7 +62,7 @@ const Navbar = () => {
             onClick={() => handleNavigation(item.path)}
             aria-label={item.label}
           >
-            <span className="nav-icon">{item.icon}</span>
+            <FontAwesomeIcon icon={item.icon} className="nav-icon" />
             <span className="nav-label">{item.label}</span>
           </button>
         ))}
