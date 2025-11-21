@@ -26,10 +26,16 @@
   cursor: pointer;
   font-weight: 600;
 }
+.swipe-btn:hover {
+  color: #4299e1;
+  border: 2px solid #4299e1
+}
+
 .swipe-btn:disabled {
   opacity: 0.6;
   cursor: default;
 }
+
 .back-btn {
   background: #e2e8f0;
   color: #1a202c;
@@ -43,8 +49,12 @@
   opacity: 0.5;
   cursor: default;
 }
+
+.back-btn:hover {
+  border: 1px solid #1a202c;
+}
 .profiles-page {
-  min-height: 100vh;
+  /*min-height: 100vh;*/
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,7 +68,7 @@
 
 .profiles-page h1 {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   font-size: 2rem;
 }
 
@@ -128,7 +138,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .interest-tag {
@@ -145,8 +155,13 @@
 .actions {
   display: flex;
   gap: 1rem;
-  padding: 1.5rem;
+  padding: 1rem;
   border-top: 1px solid #e2e8f0;
+}
+
+.action-swipe {
+  display: flex;
+  justify-content: center;
 }
 
 .reject-btn,
@@ -169,7 +184,7 @@
 
 .reject-btn:hover {
   background: #fc8181;
-  color: white;
+  color: rgb(148, 42, 42);
   transform: translateY(-2px);
 }
 
@@ -185,18 +200,18 @@
   transform: translateY(-2px);
 }
 
-/* Swipe Hint */
+/* Swipe Hint 
 .swipe-hint {
   text-align: center;
   color: #718096;
   font-size: 0.85rem;
   margin-top: 1rem;
-}
+}*/
 
 /* Progress */
 .progress {
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 0.4rem;
   font-weight: 500;
 }
 
@@ -226,6 +241,10 @@
 }
 
 @media (max-width: 600px) {
+  .profiles-page {
+    min-height: 100vh;
+  }
+  
   .profile-avatar {
     height: 250px;
   }

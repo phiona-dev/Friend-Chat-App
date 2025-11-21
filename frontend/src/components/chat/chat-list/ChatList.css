@@ -1,11 +1,16 @@
+/*Pending matches section*/
 .pending-matches-section {
-    background-color: white;
+    margin-bottom: 2rem;
+    /*background-color: white;
     padding: 16px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;*/
 }
 
-.section-label {
-    margin-bottom: 12px;
+.section-label, .chats-section-label {
+    /*margin-bottom: 12px;*/
+    font-size: 1.1rem;
+    font-weight: 600;
+    
 }
 
 .section-label span {
@@ -97,7 +102,9 @@
 
 .match-actions {
     display: flex;
-    gap: 8px
+    gap: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #e2e8f0;
 }
 
 .reject-button, .accept-button {

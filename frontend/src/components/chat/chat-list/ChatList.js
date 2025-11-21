@@ -92,8 +92,8 @@ const PendingMatchCard = ({ match, onAccept, onReject }) => {
               <span className="more-interests">+{match.interests.length - 3} more</span>
             )}
           </div>
-          {match.bio && (
-            <p className="match-bio">{match.bio}</p>
+          {match.about && (
+            <p className="match-bio">{match.about}</p>
           )}
         </div>
       </div>
@@ -104,14 +104,14 @@ const PendingMatchCard = ({ match, onAccept, onReject }) => {
           onClick={onReject}
           aria-label="Reject match"
         >
-          X
+          Reject
         </button>
         <button
           className="accept-button"
           onClick={onAccept}
           aria-label="Accept match"
         >
-          ✓
+          Accept
         </button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './match.css';
-import { matchingAPI } from '../../Services/api';
+import { matchingAPI, chatAPI } from '../../Services/api'; // Import chatAPI too
 import Navbar from "../navigation/bottom-navbar"
 
 const CURRENT_USER_ID = 'user1'; // Use actual logged-in user
@@ -20,7 +20,10 @@ export default function MatchingPage() {
   });
   const [swipeClass, setSwipeClass] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
-  const SWIPE_ANIM_MS = 320; // duration must match CSS transition
+  const SWIPE_ANIM_MS = 320;
+
+  // Filter unprocessed profiles for display
+  const unprocessedProfiles = profiles.filter(p => !processedIds.has(p.matchId));
 
   // Load profiles on mount
   useEffect(() => {
@@ -28,9 +31,7 @@ export default function MatchingPage() {
       setLoading(true);
       try {
         const matches = await matchingAPI.getPendingMatches(CURRENT_USER_ID);
-        // Filter out already processed matches
-        const filtered = matches.filter(m => !processedIds.has(m.matchId));
-        setProfiles(filtered);
+        setProfiles(matches);
       } catch (err) {
         console.error('Failed to load profiles', err);
         setError('Failed to load profiles');
@@ -39,36 +40,145 @@ export default function MatchingPage() {
       }
     };
     loadProfiles();
-  }, [processedIds]);
+  }, []);
+
+  // Reset index when unprocessed profiles change
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [unprocessedProfiles.length]);
 
   // Save processed ID to localStorage
   useEffect(() => {
     localStorage.setItem('processedMatches', JSON.stringify([...processedIds]));
   }, [processedIds]);
 
-  const handleAccept = () => {
-    const currentProfile = profiles[currentIndex];
-    if (!currentProfile) return;
+  const handleAccept = async () => {
+    if (!unprocessedProfiles[currentIndex]) return;
 
-    // Mark as processed
-    setProcessedIds(prev => new Set([...prev, currentProfile.matchId]));
+    const currentProfile = unprocessedProfiles[currentIndex];
     
-    // Move to next profile
-    moveToNext();
+    try {
+      setIsAnimating(true);
+      
+      // Check if match was already processed
+      if (processedIds.has(currentProfile.matchId)) {
+        alert("This match has already been processed");
+        return;
+      }
+
+      // Get current user info (you should replace this with your actual user data)
+      const currentUserInfo = {
+        userId: CURRENT_USER_ID,
+        pseudonym: "You", // Replace with actual user pseudonym
+        avatar: "" // Replace with actual user avatar
+      };
+
+      // Optimistically mark as processed
+      setProcessedIds(prev => new Set([...prev, currentProfile.matchId]));
+
+      try {
+        // Accept the match via API
+        const acceptRes = await matchingAPI.acceptMatch(currentProfile.matchId, CURRENT_USER_ID);
+
+        let finalChat = null;
+
+        if (acceptRes && acceptRes.chat) {
+          // Server returned a chat
+          finalChat = acceptRes.chat;
+        } else {
+          // Server didn't return a chat - create one
+          try {
+            finalChat = await chatAPI.createChat(
+              currentUserInfo,
+              {
+                userId: currentProfile.userId,
+                pseudonym: currentProfile.pseudonym,
+                avatar: currentProfile.avatar
+              }
+            );
+          } catch (createErr) {
+            // Rollback optimistic changes if createChat fails
+            setProcessedIds(prev => {
+              const copy = new Set(prev);
+              copy.delete(currentProfile.matchId);
+              return copy;
+            });
+            setError('Failed to create chat');
+            console.error('createChat failed:', createErr);
+            alert('Match accepted but failed to create chat. Please try again.');
+            return;
+          }
+        }
+
+        console.log('Chat created successfully:', finalChat);
+        alert(`You matched with ${currentProfile.pseudonym}! You can now chat with them.`);
+
+      } catch (apiErr) {
+        // Rollback optimistic updates if accept endpoint failed
+        setProcessedIds(prev => {
+          const copy = new Set(prev);
+          copy.delete(currentProfile.matchId);
+          return copy;
+        });
+        setError('Failed to accept match');
+        console.error('acceptMatch failed:', apiErr);
+        alert('Failed to accept match. Please try again.');
+        return;
+      }
+
+      // Move to next profile only after successful acceptance
+      moveToNext();
+
+    } catch (err) {
+      console.error('Error in handleAccept:', err);
+      setError('Failed to process match');
+      setIsAnimating(false);
+    }
   };
 
-  const handleReject = () => {
-    const currentProfile = profiles[currentIndex];
-    if (!currentProfile) return;
+  const handleReject = async () => {
+    if (!unprocessedProfiles[currentIndex]) return;
 
-    // Mark as processed
-    setProcessedIds(prev => new Set([...prev, currentProfile.matchId]));
+    const currentProfile = unprocessedProfiles[currentIndex];
     
-    // Move to next profile
-    moveToNext();
+    try {
+      setIsAnimating(true);
+      
+      // Check if match was already processed
+      if (processedIds.has(currentProfile.matchId)) {
+        alert("This match has already been processed");
+        return;
+      }
+
+      // Optimistically mark as processed
+      setProcessedIds(prev => new Set([...prev, currentProfile.matchId]));
+
+      try {
+        await matchingAPI.rejectMatch(currentProfile.matchId, CURRENT_USER_ID);
+        alert(`You rejected ${currentProfile.pseudonym}`);
+      } catch (apiErr) {
+        // Rollback
+        setProcessedIds(prev => {
+          const copy = new Set(prev);
+          copy.delete(currentProfile.matchId);
+          return copy;
+        });
+        setError('Failed to reject match');
+        console.error('rejectMatch failed:', apiErr);
+        alert('Failed to reject match. Please try again.');
+        return;
+      }
+
+      // Move to next profile only after successful rejection
+      moveToNext();
+
+    } catch (err) {
+      console.error('Error in handleReject:', err);
+      setError('Failed to process match');
+      setIsAnimating(false);
+    }
   };
 
-  // Swipe handler: animates then moves to next without marking processed
   const handleSwipe = (direction = 'left') => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -80,15 +190,22 @@ export default function MatchingPage() {
     }, SWIPE_ANIM_MS);
   };
 
-  // Navigate back to previous profile
   const handleBack = () => {
     if (isAnimating) return;
     setCurrentIndex(prev => Math.max(0, prev - 1));
   };
 
   const moveToNext = () => {
-    setCurrentIndex(prev => prev + 1);
+    setCurrentIndex(prev => {
+      if (prev + 1 >= unprocessedProfiles.length) {
+        return prev;
+      }
+      return prev + 1;
+    });
+    setIsAnimating(false);
   };
+
+  const currentProfile = unprocessedProfiles[currentIndex];
 
   if (loading) {
     return <div className="profiles-page"><p>Loading profiles...</p></div>;
@@ -98,22 +215,17 @@ export default function MatchingPage() {
     return <div className="profiles-page"><p className="error">{error}</p></div>;
   }
 
-  if (profiles.length === 0 || currentIndex >= profiles.length) {
+  if (unprocessedProfiles.length === 0) {
     return (
       <div className="profiles-page">
         <div className="no-profiles">
           <h2>No more profiles!</h2>
           <p>You've reviewed all available matches. Check back later for new profiles.</p>
-          <button className="back-btn" onClick={handleBack} disabled={isAnimating || currentIndex === 0} aria-label="Back">
-              Back
-          </button>
         </div>
         <Navbar />
       </div>
     );
   }
-
-  const currentProfile = profiles[currentIndex];
 
   return (
     <div className="profiles-page">
@@ -157,21 +269,22 @@ export default function MatchingPage() {
             <button className="reject-btn" onClick={handleReject} disabled={isAnimating}>
               Reject
             </button>
-            <button className="swipe-btn" onClick={() => handleSwipe('left')} disabled={isAnimating} aria-label="Swipe">
-              Swiping
-            </button>
             <button className="accept-btn" onClick={handleAccept} disabled={isAnimating}>
               Accept
             </button>
           </div>
+          <div className="action-swipe">
+            <button className="swipe-btn" onClick={() => handleSwipe('left')} disabled={isAnimating} aria-label="Swipe">
+              Click to swipe
+            </button>
+          </div>
 
-          {/* Swipe Hint */}
-          <p className="swipe-hint">Swipe or click buttons</p>
-        </div>
-
-        {/* Progress */}
-        <div className="progress">
-          Profile {currentIndex + 1} of {profiles.length}
+          {/* Swipe Hint 
+          <p className="swipe-hint">Swipe or click buttons</p>*/}
+          {/* Progress */}
+          <div className="progress">
+            Profile {currentIndex + 1} of {unprocessedProfiles.length}
+          </div>
         </div>
       </div>
 
