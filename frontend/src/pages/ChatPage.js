@@ -27,12 +27,20 @@ const App = () => {
 
   //mock data for testing
   //will be replaced with real auth later
-  const mockCurrentUser = {
+  /*const mockCurrentUser = {
     userId: "user1",
     pseudonym: "You",
     isOnline: true,
     avatar: "/avatars/user1.jpg"
+  }*/
+  const currentUserProfile = JSON.parse(localStorage.getItem("currentUserProfile") || "{}");
+  const mockCurrentUser = {
+    userId: currentUserProfile.userId || "user1",
+    pseudonym: currentUserProfile.pseudonym || "You",
+    isOnline: true,
+    avatar: currentUserProfile.avatar || "/avatars/user1.jpg"
   }
+
 
 
   useEffect(() => {
@@ -228,7 +236,7 @@ const App = () => {
               {
                 userId: mockCurrentUser.userId,
                 pseudonym: mockCurrentUser.pseudonym,
-                avatar: mockCurrentUser.avatar
+                //avatar: mockCurrentUser.avatar
               },
               {
                 userId: `user-${match.matchId}`,

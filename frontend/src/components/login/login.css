@@ -91,6 +91,8 @@
 .login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  color:#1F94F9;
+  border: 2px solid #1F94F9
 }
 
 .login-btn:active {

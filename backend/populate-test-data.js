@@ -170,16 +170,16 @@ const populateTestData = async () => {
           { $set: u },
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );
-        console.log('✅ Upserted user:', u.userId);
+        console.log('Upserted user:', u.userId);
       } catch (err) {
-        console.error('❌ Failed to upsert user', u.userId, err.message);
+        console.error('Failed to upsert user', u.userId, err.message);
       }
     }
 
     console.log('Demo users seeded successfully!');
 
   } catch (error) {
-    console.error('❌ Error creating test data:', error);
+    console.error('Error creating test data:', error);
     mongoose.connection.close();
   }
 };

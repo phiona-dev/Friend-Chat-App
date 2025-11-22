@@ -6,15 +6,7 @@ import Navbar from '../navigation/bottom-navbar';
 const STORAGE_KEY = 'currentUserProfile';
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState({
-    userId: 'user1',
-    pseudonym: 'You',
-    email: '',
-    about: '',
-    interests: [],
-    avatar: '/avatars/user1.jpg'
-  });
-
+  const [profile, setProfile] = useState(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -24,7 +16,9 @@ export default function ProfilePage() {
     const loadProfile = async () => {
       try {
         // Try loading from backend first
-        const userId = 'user1'; // Use actual user ID
+        //const userId = 'user1'; // Use actual user ID
+        const currentUserProfile = JSON.parse(localStorage.getItem('currentUserProfile') || '{}');
+        const userId = currentUserProfile.userId || 'user1';
         const data = await userAPI.getProfile(userId);
         setProfile(data);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -36,8 +30,18 @@ export default function ProfilePage() {
           if (saved) {
             setProfile(JSON.parse(saved));
           }
+          
         } catch (e) {
           console.error('Failed to load profile', e);
+          //set empty profile as last resort
+          setProfile({
+              userId: "user1",
+              pseudonym: "",
+              email: "",
+              about: "",
+              interests: [],
+              avatar: ""
+            })
         }
       } finally {
         setLoading(false);
@@ -85,19 +89,33 @@ export default function ProfilePage() {
     setSaving(true);
     try {
       // Save to backend
-      await userAPI.createProfile(profile);
+      //await userAPI.createProfile(profile);
+      //create a copy without the avatar for API call
+      //const { avatar, ...profileWithoutAvatar } = profile;
+      await userAPI.createProfile(profile)
+
+      //save to backend without avatar
+      //await userAPI.createProfile(profileWithoutAvatar);
       // Save to localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
       setMessage('Profile saved successfully');
     } catch (err) {
-      console.error('Save failed', err);
-      setMessage('Failed to save profile');
+      if (err.message.includes('413')) {
+        // If payload too large, save without avatar to backend but keep avatar locally
+        const { avatar, ...profileWithoutAvatar } = profile;
+        await userAPI.createProfile(profileWithoutAvatar);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); // Keep avatar in localStorage
+        setMessage("Profile saved (avatar saved locally only)");
+      }else {
+        console.error('Save failed', err);
+        setMessage('Failed to save profile');
+      }
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) {
+  if (loading || !profile) {
     return (
       <div className="profile-page">
         <p>Loading profile...</p>

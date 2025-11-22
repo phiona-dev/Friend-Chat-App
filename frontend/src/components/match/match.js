@@ -3,7 +3,9 @@ import './match.css';
 import { matchingAPI, chatAPI } from '../../Services/api'; // Import chatAPI too
 import Navbar from "../navigation/bottom-navbar"
 
-const CURRENT_USER_ID = 'user1'; // Use actual logged-in user
+//const CURRENT_USER_ID = 'user1'; // Use actual logged-in user
+const currentUserProfile = JSON.parse(localStorage.getItem("currentUserProfile") || "{}")
+const CURRENT_USER_ID = currentUserProfile.userId
 
 export default function MatchingPage() {
   const [profiles, setProfiles] = useState([]);
