@@ -14,10 +14,14 @@ const LostFoundItemSchema = new Schema(
     location: { type: String, trim: true },
     date: { type: Date, default: Date.now },
     imageUrl: { type: String },
+    reporterId: { type: String, required: true },
     reporterName: { type: String, trim: true },
     reporterEmail: { type: String, trim: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    collection: "lostfounditems"
+  }
 );
 
 LostFoundItemSchema.index({ title: 'text', description: 'text', location: 'text' });

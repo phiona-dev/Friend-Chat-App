@@ -4,6 +4,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const cors = require("cors");
 const connectDB = require("./config/database");
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,6 +18,8 @@ const allowedOrigins = [
 app.use(cors({ origin: allowedOrigins }));
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Socket.io setup
 const io = socketIo(server, {

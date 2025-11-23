@@ -3,12 +3,14 @@ import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import Navbar from '../../components/navigation/bottom-navbar';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
+const IMAGE_BASE = API_BASE.replace('/api', ''); // Remove /api for image URLs
 
 export default function LostFoundList() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
+  const [imageErrors, setImageErrors] = useState({}); // Track failed images
 
   const q = searchParams.get('q') || '';
   const status = searchParams.get('status') || '';
@@ -38,6 +40,32 @@ export default function LostFoundList() {
     }
     load();
   }, [q, status, category]);
+
+  // Handle image loading errors
+  const handleImageError = (itemId) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [itemId]: true
+    }));
+  };
+
+  // Construct proper image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's already a full URL, return as is
+    if (imageUrl.startsWith('http')) {
+      return imageUrl;
+    }
+    
+    // If it starts with /, it's probably from the backend public folder
+    if (imageUrl.startsWith('/')) {
+      return `${IMAGE_BASE}${imageUrl}`;
+    }
+    
+    // Otherwise, assume it's relative to the backend
+    return `${IMAGE_BASE}/${imageUrl}`;
+  };
 
   function onFilterChange(e) {
     const form = e.target.form || e.currentTarget;
@@ -124,6 +152,9 @@ export default function LostFoundList() {
       <div style={{ display: 'grid', gap: '1.25rem', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))' }}>
         {items.map(item => {
           const colors = statusColors[item.status] || statusColors.claimed;
+          const imageUrl = getImageUrl(item.imageUrl);
+          const hasImageError = imageErrors[item._id];
+          
           return (
             <Link
               key={item._id}
@@ -149,10 +180,10 @@ export default function LostFoundList() {
               }}
             >
               <div style={{ display: 'flex', gap: '1rem' }}>
-                {item.imageUrl ? (
+                {imageUrl && !hasImageError ? (
                   <img
-                    src={item.imageUrl}
-                    alt="item"
+                    src={imageUrl}
+                    alt={item.title}
                     style={{
                       width: '100px',
                       height: '100px',
@@ -160,20 +191,30 @@ export default function LostFoundList() {
                       borderRadius: 'var(--radius)',
                       flexShrink: 0
                     }}
+                    onError={() => handleImageError(item._id)}
+                    onLoad={() => console.log('Image loaded successfully:', imageUrl)}
                   />
                 ) : (
                   <div style={{
                     width: '100px',
                     height: '100px',
-                    background: '#667eea',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     borderRadius: 'var(--radius)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '2.5rem',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    color: 'white'
                   }}>
-                    📦
+                    {item.category === 'phone' && '📱'}
+                    {item.category === 'keys' && '🔑'}
+                    {item.category === 'laptop' && '💻'}
+                    {item.category === 'book' && '📚'}
+                    {item.category === 'bag' && '🎒'}
+                    {item.category === 'id' && '🪪'}
+                    {item.category === 'clothing' && '👕'}
+                    {!['phone', 'keys', 'laptop', 'book', 'bag', 'id', 'clothing'].includes(item.category) && '📦'}
                   </div>
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>

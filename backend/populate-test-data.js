@@ -4,6 +4,7 @@ require('dotenv').config();
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
 const User = require('./models/User');
+const LostFound = require('./models/LostFoundItem'); // Add this import
 
 const populateTestData = async () => {
   try {
@@ -17,6 +18,7 @@ const populateTestData = async () => {
     // Clear existing data
     await Chat.deleteMany({});
     await Message.deleteMany({});
+    await LostFound.deleteMany({}); // Clear lost & found items
     
     console.log('Creating test chats...');
 
@@ -102,13 +104,7 @@ const populateTestData = async () => {
     };
     await chat2.save();
 
-    console.log('Test data created successfully!');
-    console.log('Created 2 chats with messages');
-    
-    // Verify the data
-    const chatCount = await Chat.countDocuments();
-    const messageCount = await Message.countDocuments();
-    console.log(`Total chats: ${chatCount}, Total messages: ${messageCount}`);
+    console.log('Test chats created successfully!');
 
     // --- seed demo users (always run, don't catch errors) ---
     console.log('\nSeeding demo users...');
@@ -178,8 +174,91 @@ const populateTestData = async () => {
 
     console.log('Demo users seeded successfully!');
 
+    // --- CREATE LOST & FOUND TEST ITEMS ---
+    console.log('\nCreating Lost & Found test items...');
+    
+    const lostFoundItems = [
+      {
+        status: 'lost',
+        category: 'laptop',
+        title: 'MacBook Pro 16"',
+        description: 'Lost my MacBook Pro near the library. It has a space gray case and stickers on the cover.',
+        location: 'Library - 2nd floor',
+        reporterId: 'user2', // Different user than current user
+        reporterName: 'StarGazer',
+        reporterEmail: 'stargazer@example.com',
+        imageUrl: '/uploads/laptop-demo.jpg',
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
+      },
+      {
+        status: 'found',
+        category: 'phone',
+        title: 'Samsung Galaxy Found',
+        description: 'Found a Samsung Galaxy phone in the cafeteria. Black case with a cracked screen.',
+        location: 'Main Cafeteria',
+        reporterId: 'user3', // Different user than current user
+        reporterName: 'CampusHero',
+        reporterEmail: 'campushero@example.com',
+        imageUrl: '/uploads/phone-demo.jpg',
+        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000) // 1 hour ago
+      },
+      {
+        status: 'lost',
+        category: 'bag',
+        title: 'Blue Backpack',
+        description: 'Lost my blue North Face backpack containing textbooks and a water bottle.',
+        location: 'Student Center',
+        reporterId: 'user4', // Different user than current user
+        reporterName: 'CodeNinja',
+        reporterEmail: 'codeninja@example.com',
+        imageUrl: '/uploads/backpack-demo.jpg',
+        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000) // 4 hours ago
+      },
+      {
+        status: 'found',
+        category: 'keys',
+        title: 'Set of Keys Found',
+        description: 'Found a set of keys with a car key and several house keys. Has a small teddy bear keychain.',
+        location: 'Parking Lot B',
+        reporterId: 'user5', // Different user than current user
+        reporterName: 'ArtisticAmy',
+        reporterEmail: 'amy@example.com',
+        timestamp: new Date(Date.now() - 30 * 60 * 1000) // 30 minutes ago
+      }
+    ];
+
+    for (const item of lostFoundItems) {
+      try {
+        const newItem = new LostFound(item);
+        await newItem.save();
+        console.log(`Created ${item.status} item: ${item.title}`);
+      } catch (err) {
+        console.error('Failed to create lost/found item:', item.title, err.message);
+      }
+    }
+
+    console.log('Lost & Found test items created successfully!');
+
+    // Final counts
+    const chatCount = await Chat.countDocuments();
+    const messageCount = await Message.countDocuments();
+    const lostFoundCount = await LostFound.countDocuments();
+    
+    console.log('\n=== FINAL COUNTS ===');
+    console.log(`Total chats: ${chatCount}`);
+    console.log(`Total messages: ${messageCount}`);
+    console.log(`Total lost/found items: ${lostFoundCount}`);
+    console.log('===================');
+
+    console.log('\n Test data population complete!');
+    console.log('\nTo test the contact button:');
+    console.log('1. Log in as user1 (your main account)');
+    console.log('2. View any of the lost/found items created above');
+    console.log('3. You should see "Contact Me" buttons since different users reported them');
+
   } catch (error) {
     console.error('Error creating test data:', error);
+  } finally {
     mongoose.connection.close();
   }
 };

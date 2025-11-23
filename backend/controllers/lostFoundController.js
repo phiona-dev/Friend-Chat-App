@@ -2,21 +2,54 @@ const LostFoundItem = require('../models/LostFoundItem');
 
 async function createReport(req, res) {
   try {
-    const { title, description, category, status, location, date, imageUrl, reporterName, reporterEmail } = req.body;
+    console.log('=== CREATE REPORT REQUEST ===');
+    console.log('Request body:', req.body);
+    console.log('Request files:', req.files);
+    
+    let itemData = { ...req.body };
+    
+    // Handle uploaded files with proper storage
+    if (req.files && req.files.length > 0) {
+      const imageFile = req.files.find(file => file.fieldname === 'image');
+      if (imageFile) {
+        // File is automatically saved to uploads folder by multer
+        itemData.imageUrl = `/uploads/${imageFile.filename}`;
+      }
+    }
+
+    // Validate required fields
+    if (!itemData.title) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
+    
+    if (!itemData.description) {
+      return res.status(400).json({ message: 'Description is required' });
+    }
+
+    console.log('Creating item with data:', itemData);
+
     const item = await LostFoundItem.create({
-      title,
-      description,
-      category,
-      status: status || 'lost',
-      location,
-      date,
-      imageUrl,
-      reporterName,
-      reporterEmail,
+      title: itemData.title,
+      description: itemData.description,
+      category: itemData.category || 'other',
+      status: itemData.status || 'lost',
+      location: itemData.location || '',
+      date: itemData.date || new Date(),
+      imageUrl: itemData.imageUrl || '',
+      reporterId: itemData.reporterId || 'unknown', // Make sure this is included
+      reporterName: itemData.reporterName || 'Anonymous',
+      reporterEmail: itemData.reporterEmail || '',
     });
+    
+    console.log('✅ Item created successfully:', item._id);
     res.status(201).json(item);
+    
   } catch (err) {
-    res.status(400).json({ message: 'Failed to create report', error: err.message });
+    console.error('❌ Create report error:', err);
+    res.status(400).json({ 
+      message: 'Failed to create report', 
+      error: err.message
+    });
   }
 }
 
