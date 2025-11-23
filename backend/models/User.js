@@ -7,7 +7,10 @@ const UserSchema = new Schema(
     email: { type: String, trim: true },
     about: { type: String, trim: true },
     interests: { type: [String], default: [] },
-    avatar: { type: String },
+    avatar: {
+      type: String,
+      default: "avatars/default.jpg"
+    },
   },
   { timestamps: true }
 );
