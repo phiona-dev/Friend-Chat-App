@@ -1,0 +1,96 @@
+/* GENERAL LAYOUT */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+/* MAIN CONTAINER */
+.post-container {
+  width: 500px;
+  margin: 20px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* INPUT AREA */
+.post-container input {
+  width: 70%;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.post-container button {
+  padding: 10px 15px;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.post-container button:hover {
+  background: #3c7bc4;
+}
+
+/* POST ITEM */
+.post-item {
+  background: #fafafa;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+}
+
+.post-item strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.post-item button {
+  margin-right: 10px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.post-item button:nth-child(2) { /* Like */
+  background: #48c774;
+  color: white;
+}
+.post-item button:nth-child(3) { /* Delete */
+  background: #ff6961;
+  color: white;
+}
+.post-item button:nth-child(4) { /* Edit */
+  background: #f0ad4e;
+  color: white;
+}
+
+.post-item button:hover {
+  opacity: 0.9;
+}
+
+textarea {
+  width: 100%;
+  height: 70px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
