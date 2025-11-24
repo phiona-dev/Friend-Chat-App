@@ -34,7 +34,11 @@ const VerificationPage = () => {
     try {
       const anonymousID = uuidv4();
 
-      
+      //logs to confirm the user is saved as an anonymous id      
+      console.log("Original UID from email:", uid);
+      console.log("Generated Anonymous ID:", anonymousID);
+      console.log("Saving to localStorage now...");
+
       // persist the anonymous id locally so returning users are detected
       localStorage.setItem('currentUserId', anonymousID);
 
