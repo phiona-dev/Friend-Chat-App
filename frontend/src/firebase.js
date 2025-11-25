@@ -6,13 +6,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBG7gmBNT409PinvKQ2TrNMdp4UxmaksCs",
-  authDomain: "friend-chat-app-77edb.firebaseapp.com",
-  projectId: "friend-chat-app-77edb",
-  storageBucket: "friend-chat-app-77edb.firebasestorage.app",
-  messagingSenderId: "600149677370",
-  appId: "1:600149677370:web:6b7d93949a9cdc98b42c03",
-  measurementId: "G-Q4YFWNPCLL"
+  apiKey: "AIzaSyCj2gWyPf68spusfshk47rjY6k86ZLIPw0",
+  authDomain: "usiu-connect-539f5.firebaseapp.com",
+  projectId: "usiu-connect-539f5",
+  storageBucket: "usiu-connect-539f5.firebasestorage.app",
+  messagingSenderId: "612927917472",
+  appId: "1:612927917472:web:0068c332c5e01527bf68c5",
+  measurementId: "G-XRQ629E741"
 };
 
 // Initialize Firebase
