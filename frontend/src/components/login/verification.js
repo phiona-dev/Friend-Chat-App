@@ -1,23 +1,22 @@
-// VerificationPage.jsx
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
+import { auth } from '../../firebase'; 
 import { doc, setDoc } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
+import { signOut } from 'firebase/auth'; 
 import "./login.css";
 
 const VerificationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { uid, generatedCode } = location.state || {};
+  const { uid, generatedCode, anonymousID } = location.state || {};
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  
 
-  if (!uid || !generatedCode) {
+  if (!uid || !generatedCode || !anonymousID) {
     navigate('/');
+    return null;
   }
 
   const handleVerifyCode = async (e) => {
@@ -32,30 +31,35 @@ const VerificationPage = () => {
     }
 
     try {
-      const anonymousID = uuidv4();
-
-      //logs to confirm the user is saved as an anonymous id      
+      // LOGS for debugging
       console.log("Original UID from email:", uid);
-      console.log("Generated Anonymous ID:", anonymousID);
+      console.log("Using Anonymous ID from LoginPage:", anonymousID);
       console.log("Saving to localStorage now...");
 
-      // persist the anonymous id locally so returning users are detected
-      localStorage.setItem('currentUserId', anonymousID);
-
-      await setDoc(doc(db, "UserMap", uid), {
-        anonymousID,
-        createdAt: new Date(),
-      });
-
+      // APPLICATION BOX: Create user profile with anonymous ID only
       await setDoc(doc(db, "Users", anonymousID), {
         nickname: "User" + anonymousID.slice(0, 7),
         verifiedAt: new Date(),
+        joinDate: new Date(),
+        lastActive: new Date(),
       });
 
-      alert("Verification successful! Redirecting...");
+      // Store anonymous ID locally with consistent key name
+      localStorage.setItem('currentAnonymousId', anonymousID);
+
+      // Store UID for returning users - ADD THIS
+      localStorage.setItem('userUid', uid);
+
+      console.log("Verification successful! User data saved.");
+
+      console.log("Firebase Auth signed out for privacy");
+      console.log("User now completely anonymous in app");
+
+      alert("Verification successful! You are now anonymous. Redirecting...");
 
       navigate('/create-profile');
     } catch (err) {
+      console.error("Verification error:", err);
       setError('Error saving user data. Please try again.');
     } finally {
       setLoading(false);
@@ -65,7 +69,7 @@ const VerificationPage = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-                {/* Logo */}
+        {/* Logo */}
         <div className="logo-container">
           <img 
             src="/logo.png" 
@@ -86,6 +90,7 @@ const VerificationPage = () => {
               onChange={e => setCode(e.target.value)}
               required
               className="form-input"
+              maxLength="6"
             />
           </div>
           <button type="submit" className="login-btn" disabled={loading}>

@@ -1,21 +1,21 @@
-// LoginPage.jsx
-import React, { useState } from 'react';
+// LoginPage.jsx - CORRECTED VERSION
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./login.css";
-import {auth} from '../../firebase';
+import { auth } from '../../firebase';
 import { db } from '../../firebase';
-import {doc, setDoc} from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import emailjs from '@emailjs/browser';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');;
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [, setUserId] = useState("");
+  //const [, setUserId] = useState("");
 
   //strong password regex
   const isStrongPassword = (password) => {
@@ -24,7 +24,7 @@ const LoginPage = () => {
   }
   
   //Custom error messages
-    const getErrorMessage = (errorCode) => {
+  const getErrorMessage = (errorCode) => {
     switch (errorCode) {
       case "auth/email-already-in-use":
         return "Email already registered";
@@ -36,7 +36,6 @@ const LoginPage = () => {
         return `Unexpected error: ${errorCode}`;
     }
   };
-
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -67,22 +66,32 @@ const LoginPage = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
-      setUserId(uid);
+
+      // Generate anonymous ID immediately
+      const anonymousID = uuidv4();
+
+      // VERIFICATION BOX: Store the connection securely (one-time)
+      await setDoc(doc(db, "VerificationBox", uid), {
+        anonymousID: anonymousID, 
+        email: email, // This is the ONLY place email is stored
+        verifiedAt: new Date(),
+        // Admin controls for accountability
+        adminAccessLog: [],
+        lastAdminAccess: null
+      });
 
       // Generate 6-digit code
       const newCode = Math.floor(100000 + Math.random() * 900000).toString();
-      console.log("Generated code:", newCode);
-
-      //adding expiry time of 15 minutes
-      const expiryMinutes = 15;
+      
+      // Calculate expiry time for email
+      const expiryMinutes = 3;
       const expiresAt = new Date(Date.now() + expiryMinutes * 60000);
-
-      //readable time.
       const expiryTimeFormatted = expiresAt.toLocaleTimeString([], { 
         hour: '2-digit', 
-        minute: '2-digit' });
+        minute: '2-digit'
+      });
 
-      //save code in Firestore
+      // Save code in VerificationBox
       await setDoc(doc(db, "VerificationCodes", uid), {
         code: newCode,
         createdAt: new Date(),
@@ -93,7 +102,8 @@ const LoginPage = () => {
       await emailjs.send(
         "service_5wdkx74",
         "template_f7nvm99",
-        { to_email: email, 
+        { 
+          to_email: email, 
           passcode: newCode,
           time: expiryTimeFormatted,
           expiry_time: `${expiryMinutes} minutes`,
@@ -101,17 +111,38 @@ const LoginPage = () => {
         "ohkQhougF79J5H3ER"
       );
 
-      // Proceed to verification step
-      navigate('/verify', {state: { uid, generatedCode : newCode} });
-  
-    alert("Verification code sent to your email!");
+      // Store anonymous ID locally
+      localStorage.setItem('currentAnonymousId', anonymousID);
+      
+      // Proceed to verification step - FIXED: pass anonymousID
+      navigate('/verify', {
+        state: { 
+          uid, 
+          generatedCode: newCode,
+          anonymousID: anonymousID 
+        } 
+      });
+
+      alert("Verification code sent to your email!");
     } catch (error) {
       setError(getErrorMessage(error.code));
     } finally {
       setLoading(false);
     }
- 
   };
+
+  useEffect(() => {
+    const checkExistingUser = () => {
+      const anonymousID = localStorage.getItem('currentAnonymousId');
+      
+      if (anonymousID) {
+        console.log("Found existing user in localStorage, redirecting to welcome back");
+        navigate('/welcome-back');
+      }
+    };
+
+    checkExistingUser();
+  }, [navigate]);
 
   return (
     <div className="login-container">

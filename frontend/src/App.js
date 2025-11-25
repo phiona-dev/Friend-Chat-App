@@ -11,6 +11,7 @@ import LoginPage from './components/login/login';
 import CreateProfilePage from './components/create-profile/createProfile';
 import ProfilePage from './components/create-profile/profilePage';
 import MatchingPage from './components/match/match';
+import WelcomeBackPage from './components/login/WelcomeBackPage';
 
   
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Welcomepage/>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/verify" element={<VerificationPage/>}/>
+          <Route path="/welcome-back" element={<WelcomeBackPage />} />
           <Route path="/create-profile" element={<CreateProfilePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/matching" element={<MatchingPage />} />

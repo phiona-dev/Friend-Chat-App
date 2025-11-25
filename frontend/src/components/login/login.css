@@ -137,6 +137,38 @@
   text-align: left;
 }
 
+/* Add to login.css */
+.welcome-message {
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.welcome-back-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.sign-out-btn {
+  background: none;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.sign-out-btn:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
 
 
 /* Responsive Design */
