@@ -34,7 +34,7 @@ const testModels = async () => {
     });
     
     await testChat.save();
-    console.log('✅ Chat created successfully:', testChat._id);
+    console.log('Chat created successfully:', testChat._id);
     
     // Create a test message
     const testMessage = new Message({
@@ -45,21 +45,21 @@ const testModels = async () => {
     });
     
     await testMessage.save();
-    console.log('✅ Message created successfully:', testMessage._id);
+    console.log('Message created successfully:', testMessage._id);
     
     // Test the chat methods
     const otherUser = testChat.getOtherParticipant('user1');
-    console.log('✅ Other participant:', otherUser.pseudonym);
+    console.log('Other participant:', otherUser.pseudonym);
     
     // Test unread count method
     testChat.incrementUnreadCount('user2');
     await testChat.save();
-    console.log('✅ Unread count updated');
+    console.log('Unread count updated');
     
-    console.log('🎉 All model tests passed!');
+    console.log('All model tests passed!');
     
   } catch (error) {
-    console.error('❌ Error testing models:', error);
+    console.error('Error testing models:', error);
   } finally {
     mongoose.connection.close();
   }

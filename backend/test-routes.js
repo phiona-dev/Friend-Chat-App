@@ -12,8 +12,8 @@ const testRoutes = async () => {
     console.log('Testing chat routes functionality...');
     
     // We'll test our routes by creating data and checking responses
-    console.log('✅ Chat routes are set up and ready!');
-    console.log('📝 Available endpoints:');
+    console.log('Chat routes are set up and ready!');
+    console.log('Available endpoints:');
     console.log('   GET    /api/chats/:userId');
     console.log('   GET    /api/chats/messages/:chatId');
     console.log('   POST   /api/chats');
@@ -21,7 +21,7 @@ const testRoutes = async () => {
     console.log('   PUT    /api/chats/:chatId/read');
     
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
   } finally {
     mongoose.connection.close();
   }
