@@ -18,13 +18,14 @@
 }
 
 .own-message .message-bubble {
-    background-color: #1a5389;
-    color: white;
+    background: var(--accent);
+    color: #fff;
 }
 
 .other-message .message-bubble {
-    background-color: #e0e0e0;
-    color: #333;
+    background: var(--bg-soft);
+    color: var(--text);
+    border:1px solid var(--border);
 }
 
 .message-meta {
@@ -35,6 +36,7 @@
 }
 
 .message-status {
-    font-size: 12px;
-    opacity: 0.8
+    font-size: 11px;
+    opacity: 0.6;
+    color: var(--text-dim);
 }

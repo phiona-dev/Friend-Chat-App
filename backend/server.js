@@ -12,10 +12,21 @@ const server = http.createServer(app);
 const allowedOrigins = [
 	process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
 	'http://localhost:3001',
+	'http://localhost:3002',
+	'http://localhost:3003'
 ];
 
 // Middleware
-app.use(cors({ origin: allowedOrigins }));
+app.use(cors({
+	origin: function(origin, callback) {
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error('CORS not allowed for origin: ' + origin));
+		}
+	},
+	credentials: false
+}));
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -41,6 +52,7 @@ app.use('/api/lostfound', require('./routes/lostfound'));
 app.use('/api/chats', require('./routes/chats'));
 app.use('/api/matches', require('./routes/matches'));
 app.use('/api/users', require('./routes/user'));
+app.use('/api/posts', require('./routes/posts'));
 
 // Socket.io connection handler
 io.on("connection", (socket) => {

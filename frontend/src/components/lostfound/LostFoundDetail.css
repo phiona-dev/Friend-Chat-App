@@ -7,20 +7,24 @@
 
 .back-button {
   margin-bottom: 1.5rem;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--gray-700);
+  background: var(--bg-alt);
+  color: var(--text-dim);
   backdrop-filter: blur(10px);
-  border: none;
+  border: 1px solid var(--border);
   padding: 0.75rem 1.5rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight:600;
+  transition: var(--transition);
 }
+.back-button:hover { background: var(--accent); color:#fff; box-shadow: var(--shadow-glow); }
 
 .detail-container {
-  background: white;
+  background: var(--bg-alt);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-md);
+  border:1px solid var(--border);
   overflow: hidden;
 }
 
@@ -85,31 +89,34 @@
 }
 
 .item-title {
-  font-size: 2.25rem;
+  font-size: 2.1rem;
   font-weight: 700;
-  color: var(--gray-900);
   margin-bottom: 1rem;
+  background: var(--gradient);
+  -webkit-background-clip:text;
+  color:transparent;
 }
 
 .item-description {
-  font-size: 1.125rem;
-  color: var(--gray-700);
+  font-size: 1.05rem;
+  color: var(--text-dim);
   line-height: 1.7;
   margin-bottom: 2rem;
 }
 
 .reporter-section {
   padding: 1.25rem;
-  background: var(--gray-50);
-  border-radius: var(--radius);
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
   margin-bottom: 2rem;
-  border-left: 4px solid var(--primary);
+  border:1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .reporter-header {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--gray-700);
+  color: var(--text-dim);
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -124,8 +131,8 @@
 }
 
 .reporter-details {
-  font-size: 1rem;
-  color: var(--gray-900);
+  font-size: 0.95rem;
+  color: var(--text);
 }
 
 .reporter-name {
@@ -134,21 +141,22 @@
 }
 
 .reporter-email {
-  color: var(--gray-600);
-  font-size: 0.875rem;
+  color: var(--text-dim);
+  font-size: 0.75rem;
 }
 
 .contact-button {
-  padding: 0.75rem 1.5rem;
-  background: var(--primary);
-  color: black;
-  border: none;
-  border-radius: var(--radius);
+  padding: 0.65rem 1.25rem;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
   min-width: 120px;
-  transition: opacity 0.2s;
+  transition: var(--transition);
 }
+.contact-button:hover { background: var(--accent-hover); box-shadow: var(--shadow-glow); }
 
 .contact-button:disabled {
   background: var(--gray-400);
@@ -160,15 +168,17 @@
 }
 
 .status-section {
-  border-top: 1px solid var(--gray-200);
+  border-top: 1px solid var(--border);
   padding-top: 1.5rem;
 }
 
 .status-header {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-dim);
   margin-bottom: 1rem;
+  letter-spacing:.5px;
+  text-transform:uppercase;
 }
 
 .status-buttons {
@@ -178,13 +188,17 @@
 }
 
 .status-button {
-  padding: 0.75rem 1.5rem;
-  border: 2px solid var(--gray-300);
-  border-radius: var(--radius);
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size:0.85rem;
+  transition: var(--transition);
+  background: var(--bg-soft);
+  color: var(--text);
 }
+.status-button:not(:disabled):hover { background: var(--accent); color:#fff; box-shadow: var(--shadow-glow); transform:translateY(-2px); }
 
 .status-button:disabled {
   opacity: 1;
@@ -207,10 +221,11 @@
 
 .error-content,
 .not-found-content {
-  background: white;
+  background: var(--bg-alt);
   border-radius: var(--radius-lg);
   padding: 2rem;
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-md);
+  border:1px solid var(--border);
   text-align: center;
 }
 
@@ -225,16 +240,20 @@
 }
 
 .error-title {
-  color: var(--danger);
+  color: #fff;
+  background: var(--danger);
+  display:inline-block;
+  padding:0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
   margin-bottom: 0.5rem;
 }
 
 .not-found-title {
-  color: var(--gray-900);
+  color: var(--text);
   margin-bottom: 0.5rem;
 }
 
 .error-message,
 .not-found-message {
-  color: var(--gray-600);
+  color: var(--text-dim);
 }

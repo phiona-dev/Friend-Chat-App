@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { wrapPromise } from '../../utils/loaderManager';
 import Navbar from '../../components/navigation/bottom-navbar';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
@@ -28,7 +29,7 @@ export default function LostFoundList() {
         if (q) params.set('q', q);
         if (status) params.set('status', status);
         if (category) params.set('category', category);
-        const res = await fetch(`${API_BASE}/lostfound?${params.toString()}`);
+        const res = await wrapPromise(fetch(`${API_BASE}/lostfound?${params.toString()}`));
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Failed to load');
         setItems(data);
@@ -85,7 +86,7 @@ export default function LostFoundList() {
   return (
     <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem' }}>
       <div style={{
-        background: 'white',
+        background: 'var(--bg-alt)',
         borderRadius: 'var(--radius-lg)',
         padding: '2rem',
         boxShadow: 'var(--shadow-xl)',
@@ -94,19 +95,20 @@ export default function LostFoundList() {
         <h2 style={{
           fontSize: '2rem',
           fontWeight: 700,
-          color: 'var(--gray-900)',
+          color: 'var(--text)',
           marginBottom: '0.5rem'
         }}>Lost & Found</h2>
         <Link to="/lostfound/new" style={{
           padding: '0.5rem 1.25rem',
           borderRadius: 'var(--radius)',
           fontWeight: 600,
-          background: isActive('/lostfound/new') ? 'var(--primary)' : 'var(--primary-light)',
+          background: isActive('/lostfound/new') ? 'var(--accent)' : 'var(--accent-soft)',
+          color: 'var(--btn-text, #fff)',
           boxShadow: 'var(--shadow-sm)',
         }}>
           + Report Item
         </Link>
-        <p style={{ color: 'var(--gray-600)', marginBottom: '1.5rem' }}>Report and track lost items on campus</p>
+        <p style={{ color: 'var(--text-dim)', marginBottom: '1.5rem' }}>Report and track lost items on campus</p>
 
         
         <form onChange={onFilterChange} style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -132,18 +134,18 @@ export default function LostFoundList() {
       </div>
 
       {loading && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'white', fontSize: '1.125rem' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text)', fontSize: '1.125rem' }}>
           Loading items...
         </div>
       )}
       {error && (
         <div style={{
-          background: 'white',
+          background: 'var(--bg-alt)',
           borderRadius: 'var(--radius-lg)',
           padding: '1.5rem',
-          color: 'var(--danger)',
+          color: 'var(--danger, #b91c1c)',
           boxShadow: 'var(--shadow-lg)',
-          border: '2px solid var(--danger)'
+          border: '2px solid var(--danger, #b91c1c)'
         }}>
           ⚠️ {error}
         </div>
@@ -222,14 +224,14 @@ export default function LostFoundList() {
                     margin: '0 0 0.5rem 0',
                     fontSize: '1.25rem',
                     fontWeight: 600,
-                    color: 'var(--gray-900)',
+                    color: 'var(--text)',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap'
                   }}>{item.title}</h3>
                   <p style={{
                     margin: '0 0 0.75rem 0',
-                    color: 'var(--gray-600)',
+                    color: 'var(--text-dim)',
                     fontSize: '0.9375rem',
                     lineHeight: 1.5,
                     display: '-webkit-box',
@@ -255,14 +257,14 @@ export default function LostFoundList() {
                       fontSize: '0.8125rem',
                       fontWeight: 500,
                       background: 'var(--gray-100)',
-                      color: 'var(--gray-700)'
+                      color: 'var(--text)'
                     }}>
                       {item.category}
                     </span>
                     {item.location && (
                       <span style={{
                         fontSize: '0.8125rem',
-                        color: 'var(--gray-500)',
+                        color: 'var(--text-dim)',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.25rem'
@@ -280,22 +282,22 @@ export default function LostFoundList() {
       
       {!loading && items.length === 0 && (
         <div style={{
-          background: 'white',
+          background: 'var(--bg-alt)',
           borderRadius: 'var(--radius-lg)',
           padding: '3rem',
           textAlign: 'center',
           boxShadow: 'var(--shadow-lg)'
         }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔍</div>
-          <h3 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--gray-900)', marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--text)', marginBottom: '0.5rem' }}>
             No items found
           </h3>
-          <p style={{ color: 'var(--gray-600)', marginBottom: '1.5rem' }}>Try adjusting your search filters or be the first to report an item.</p>
+          <p style={{ color: 'var(--text-dim)', marginBottom: '1.5rem' }}>Try adjusting your search filters or be the first to report an item.</p>
           <Link to="/lostfound/new" style={{
             display: 'inline-block',
             padding: '0.75rem 1.5rem',
-            background: 'var(--primary)',
-            color: 'white',
+            background: 'var(--accent)',
+            color: 'var(--btn-text, #fff)',
             borderRadius: 'var(--radius)',
             fontWeight: 600,
             boxShadow: 'var(--shadow-md)'

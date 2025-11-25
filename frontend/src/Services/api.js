@@ -1,20 +1,22 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:5001/api";
 
-//Generic API request function
+import { wrapPromise } from '../utils/loaderManager';
+
+// Generic API request function (wrapped so the global loader reflects network activity)
 const apiRequest = async (endpoint, options = {}) => {
     try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        const response = await wrapPromise(fetch(`${API_BASE_URL}${endpoint}`, {
             headers: {
                 "Content-Type": "application/json",
                 ...options.headers
             },
             ...options,
-        });
+        }));
 
         if (!response.ok) {
             throw new Error(`API error: ${response.status}`);
         }
-        return await response.json()
+        return await response.json();
     } catch (error) {
         console.error("API request failed:", error);
         throw error;
@@ -91,4 +93,55 @@ export const userAPI = {
   getProfile: async (userId) => {
     return await apiRequest(`/users/${userId}`);
   },
+};
+
+export const postsAPI = {
+    create: async (data) => {
+        // JSON create (text-only)
+        return await apiRequest('/posts', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    },
+    createWithImage: async (formData) => {
+        try {
+            const res = await wrapPromise(fetch(`${API_BASE_URL}/posts`, {
+                method: 'POST',
+                body: formData // browser sets multipart boundary
+            }));
+            if (!res.ok) throw new Error('Failed to create post');
+            return await res.json();
+        } catch (err) { throw err; }
+    },
+    list: async (page=1, limit=20, q, tag, category) => {
+        const params = new URLSearchParams();
+        params.append('page', page);
+        params.append('limit', limit);
+        if (q) params.append('q', q);
+        if (tag) params.append('tag', tag);
+        if (category) params.append('category', category);
+        return await apiRequest(`/posts?${params.toString()}`);
+    },
+    get: async (id) => {
+        return await apiRequest(`/posts/${id}`);
+    },
+    toggleLike: async (id, userId) => {
+        return await apiRequest(`/posts/${id}/like`, {
+            method: 'POST',
+            body: JSON.stringify({ userId })
+        });
+    },
+    addComment: async (id, data) => {
+        return await apiRequest(`/posts/${id}/comments`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+    ,
+    report: async (id, data) => {
+        return await apiRequest(`/posts/${id}/report`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
 };

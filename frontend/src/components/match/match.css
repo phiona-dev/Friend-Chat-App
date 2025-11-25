@@ -257,3 +257,45 @@
     gap: 0.5rem;
   }
 }
+
+/* Theme overrides */
+.swipe-btn {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+.swipe-btn:hover { background: var(--accent-hover); box-shadow: var(--shadow-glow); }
+
+.back-btn {
+  background: var(--bg-soft);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+.back-btn:hover { background: var(--accent); color:#fff; box-shadow: var(--shadow-glow); }
+
+.profile-card {
+  background: var(--bg-alt);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border:1px solid var(--border);
+}
+
+.profile-avatar { background: var(--bg-soft); }
+.avatar-placeholder { color: var(--accent); }
+.pseudonym { color: var(--text); }
+.bio { color: var(--text-dim); font-size:0.85rem; }
+.interest-tag { background: var(--bg-soft); color: var(--accent); border:1px solid var(--border); }
+
+.reject-btn { background: var(--danger); color:#fff; border:1px solid var(--danger); }
+.reject-btn:hover { filter:brightness(1.1); }
+.accept-btn { background: var(--success); color:#fff; border:1px solid var(--success); }
+.accept-btn:hover { filter:brightness(1.1); }
+
+.no-profiles { background: var(--bg-alt); border:1px solid var(--border); box-shadow: var(--shadow-sm); }
+.no-profiles h2 { color: var(--text); }
+.no-profiles p { color: var(--text-dim); }
+.error { background: var(--danger); color:#fff; box-shadow: var(--shadow-sm); }

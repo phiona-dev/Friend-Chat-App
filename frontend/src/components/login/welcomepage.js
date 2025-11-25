@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./welcomepage.css"
 
 const WelcomePage = () => {
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Redirect logged-in users to home
+    const userId = localStorage.getItem('currentUserId');
+    if (userId) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   const handleGetStarted = () => {
-    navigate('/login');
+    navigate('/login', { state: { mode: 'signup' } });
+  };
+
+  const handleLoginInstead = () => {
+    navigate('/quick-login');
   };
 
   return (
@@ -27,12 +39,20 @@ const WelcomePage = () => {
           Your anonymous gateway to connecting with fellow USIU students
         </p>
         
-        <button 
-          className="get-started-btn"
-          onClick={handleGetStarted}
-        >
-          Get Started
-        </button>
+        <div className="welcome-actions">
+          <button 
+            className="get-started-btn"
+            onClick={handleGetStarted}
+          >
+            Get Started
+          </button>
+          <button 
+            className="login-instead-btn"
+            onClick={handleLoginInstead}
+          >
+            Already have a profile? Log in instead
+          </button>
+        </div>
       </div>
     </div>
   );

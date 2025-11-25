@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
+import { userAPI } from '../../Services/api';
 import "./login.css";
 
 const VerificationPage = () => {
@@ -48,8 +49,31 @@ const VerificationPage = () => {
         verifiedAt: new Date(),
       });
 
-      alert("Verification successful! Redirecting...");
+      // If we collected profile earlier, finalize it now
+      const pendingProfileStr = localStorage.getItem('pendingProfile');
+      if (pendingProfileStr) {
+        try {
+          const pendingProfile = JSON.parse(pendingProfileStr);
+          const profilePayload = {
+            userId: anonymousID,
+            pseudonym: pendingProfile.pseudonym,
+            interests: pendingProfile.interests,
+          };
+          await userAPI.createProfile(profilePayload);
+          localStorage.setItem('currentUserProfile', JSON.stringify(profilePayload));
+          localStorage.removeItem('pendingProfile');
+          alert('Verification successful! Profile created.');
+          navigate('/chats');
+          return;
+        } catch (profileErr) {
+          // Fallback to manual profile creation page
+          alert('Verified, but failed to auto-create profile. Please complete manually.');
+          navigate('/create-profile');
+          return;
+        }
+      }
 
+      alert('Verification successful! Complete your profile.');
       navigate('/create-profile');
     } catch (err) {
       setError('Error saving user data. Please try again.');

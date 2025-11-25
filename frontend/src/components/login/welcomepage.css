@@ -8,6 +8,17 @@
   padding: 20px;
 }
 
+.welcome-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 3rem 2rem;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
 .logo-container {
   margin-bottom: 0.5rem;
   display: flex;
@@ -31,7 +42,7 @@
 .app-title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #333;
+  color: var(--text);
   margin-bottom: 1rem;
   line-height: 1.2;
 }
@@ -39,7 +50,7 @@
 .app-description {
   font-size: 1.1rem;
   color: #666;
-  line-height: 1.6;
+    color: var(--text-dim);
   margin-bottom: 2.5rem;
   max-width: 300px;
   margin-left: auto;
@@ -47,32 +58,61 @@
 }
 
 
+
+  .welcome-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
 .get-started-btn {
   display: flex;
   justify-content: center;
   margin-left: auto;
   margin-right: auto;
-  background-color: #1F94F9;
-  color: white;
-  border: none;
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
   padding: 1rem 2.5rem;
   font-size: 1.1rem;
   border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
 
 .get-started-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-  border: 2px solid #1F94F9;
-  color: #1F94F9
+    box-shadow: var(--shadow-glow);
+    background: var(--accent-hover);
+    border-color: var(--accent);
+    color: #fff;
 }
 
 .get-started-btn:active {
   transform: translateY(0);
 }
+
+  .login-instead-btn {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--bg-soft);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.9rem 2.25rem;
+    font-size: 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .login-instead-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
 
 /* Responsive Design */
 @media (max-width: 480px) {

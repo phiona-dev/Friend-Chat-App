@@ -192,3 +192,26 @@
 .message.optimistic {
   opacity: 0.7;
 }
+
+/* Theme overrides */
+.chat-window { background: var(--bg-alt); color: var(--text); }
+.no-chat-selected { background: var(--bg-soft); }
+.no-chat-message { color: var(--text-dim); }
+.no-chat-message h3 { color: var(--accent); }
+.chat-header { background: var(--bg-alt); border-bottom:1px solid var(--border); }
+.back-button { color: var(--accent); }
+.back-button:hover { color: var(--accent-hover); }
+.partner-avatar { background: var(--accent); color:#fff; }
+.online-dot { background: var(--success); border:2px solid var(--bg-alt); }
+.partner-details h3 { color: var(--accent); }
+.partner-status { color: var(--text-dim); }
+.messages-container { background: var(--bg-soft); }
+.no-messages { color: var(--text-dim); }
+.no-messages span { color: var(--text-dim); opacity:.7; }
+.message-input-form { background: var(--bg-alt); border-top:1px solid var(--border); }
+.message-input { background: var(--bg-soft); color: var(--text); border:1px solid var(--border); transition: var(--transition); }
+.message-input:focus { border-color: var(--accent); background: var(--bg-alt); }
+.send-button { background: var(--accent); color:#fff; border:1px solid var(--accent); transition: var(--transition); }
+.send-button:hover:not(:disabled) { background: var(--accent-hover); box-shadow: var(--shadow-glow); }
+.typing-indicator { color: var(--text-dim); }
+.typing-dots span { background: var(--accent); }

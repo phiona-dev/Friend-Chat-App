@@ -1,22 +1,25 @@
 .profile-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg);
   padding: 2rem 1rem;
 }
 
 .profile-container {
   max-width: 700px;
   margin: 0 auto;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  background: var(--bg-alt);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
   padding: 2rem;
 }
 
 .profile-page h1 {
   text-align: center;
   margin-bottom: 2rem;
-  color: #1a202c;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 /* Avatar Section */
@@ -28,9 +31,10 @@
 .avatar-frame {
   width: 160px;
   height: 160px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #f0f0f0;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,18 +50,20 @@
 .avatar-placeholder {
   font-size: 48px;
   font-weight: 700;
-  color: #555;
+  color: var(--accent);
 }
 
 .avatar-upload {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: #2d6cdf;
-  color: white;
-  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-weight: 500;
+  transition: var(--transition);
 }
+.avatar-upload:hover { background: var(--accent-hover); box-shadow: var(--shadow-glow); }
 
 .avatar-upload input[type='file'] {
   display: none;
@@ -78,24 +84,30 @@
 .field-group label {
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #1a202c;
-  font-size: 0.95rem;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .field-group input,
 .field-group textarea {
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
   font-family: inherit;
+  background: var(--bg-soft);
+  color: var(--text);
+  transition: var(--transition);
 }
 
 .field-group input:focus,
 .field-group textarea:focus {
   outline: none;
-  border-color: #2d6cdf;
-  box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.1);
+  border-color: var(--accent);
+  background: var(--bg-alt);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
 }
 
 .field-group textarea {
@@ -112,23 +124,24 @@
 
 .interest-tag {
   padding: 0.5rem 1rem;
-  border: 2px solid #cbd5e0;
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: white;
+  background: var(--bg-soft);
+  color: var(--text);
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: var(--transition);
 }
 
 .interest-tag:hover {
-  border-color: #2d6cdf;
-  background-color: #f0f4ff;
+  border-color: var(--accent);
+  background: var(--bg-alt);
 }
 
 .interest-tag.selected {
-  background: #2d6cdf;
-  color: white;
-  border-color: #2d6cdf;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
 
 /* Actions */
@@ -141,19 +154,19 @@
 
 .save-btn {
   padding: 0.75rem 1.5rem;
-  background: #2d6cdf;
-  color: white;
-  border: none;
-  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition);
 }
 
 .save-btn:hover:not(:disabled) {
-  background: #2156b8;
+  background: var(--accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(45, 108, 223, 0.3);
+  box-shadow: var(--shadow-glow);
 }
 
 .save-btn:disabled {
@@ -162,7 +175,7 @@
 }
 
 .message {
-  color: #2b7a2b;
+  color: var(--success);
   font-weight: 500;
 }
 
@@ -170,17 +183,17 @@
 .activity-section {
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border);
 }
 
 .activity-section h3 {
-  color: #1a202c;
+  color: var(--text);
   margin-bottom: 0.5rem;
 }
 
 .muted {
-  color: #718096;
-  font-size: 0.95rem;
+  color: var(--text-dim);
+  font-size: 0.85rem;
 }
 
 @media (max-width: 600px) {

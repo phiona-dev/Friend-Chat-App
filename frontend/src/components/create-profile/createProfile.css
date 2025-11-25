@@ -1,9 +1,10 @@
 .create-profile-page {
   max-width: 480px;
   margin: 2rem auto;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  background: var(--bg-alt);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
   padding: 2rem;
 }
 .create-profile-page h2 {
@@ -15,13 +16,20 @@
 .create-profile-page input[type='text'] {
   width: 100%; 
   padding: 0.6rem; 
-  border-radius: 8px; 
-  border: 1px solid #ddd; 
-  font-size: 1.1rem;
+  border-radius: var(--radius-md); 
+  border: 1px solid var(--border); 
+  font-size: 1rem;
+  background: var(--bg-soft);
+  color: var(--text);
+  transition: var(--transition);
+}
+.create-profile-page input[type='text']:focus {
+  border-color: var(--accent);
+  background: var(--bg-alt);
 }
 .hint {
-    color: #666; 
-    font-size: 0.95rem; 
+    color: var(--text-dim); 
+    font-size: 0.85rem; 
     margin-bottom: 1.25rem; 
 }
 .interests-list {
@@ -31,42 +39,45 @@
     margin-top: 0.5rem;
 }
 .interests-list button {
-  border: 1px solid #bbb; 
   border-radius: 20px; 
   padding: 0.4rem 1rem; 
-  background: white;
-  border: 2px solid #cbd5e0;
-  color: #1F94F9;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
   cursor: pointer;
-  font-size: 1rem; 
-  transition: background 0.2s, border 0.2s;
+  font-size: 0.85rem; 
+  transition: var(--transition);
 }
 .interests-list button.selected {
-  background: #2d6cdf; 
+  background: var(--accent); 
   color: #fff; 
-  border-color: #2d6cdf;
+  border-color: var(--accent);
 }
 .why-anonymity {
-  background: #f0f4ff; 
-  border-radius: 8px; 
-  padding: 1rem; margin: 1.5rem 0;
+  background: var(--bg-soft); 
+  border-radius: var(--radius-md); 
+  padding: 1rem; 
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
 }
 .why-anonymity h4 {
     margin: 0 0 0.5rem 0; 
 }
 .error {
-    color: #c00; 
+    color: var(--danger); 
     margin-bottom: 1rem; 
 }
 .complete-btn {
   width: 100%; 
-  background: #2d6cdf; 
+  background: var(--accent); 
   color: #fff; 
-  border: none; 
-  border-radius: 8px;
+  border: 1px solid var(--accent); 
+  border-radius: var(--radius-md);
   padding: 0.75rem; 
-  font-size: 1.1rem; 
+  font-size: 1rem; 
   font-weight: 600; 
   margin-top: 1rem; 
   cursor: pointer;
+  transition: var(--transition);
 }
+.complete-btn:hover { background: var(--accent-hover); box-shadow: var(--shadow-glow); }

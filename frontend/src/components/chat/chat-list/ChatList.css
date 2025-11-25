@@ -320,3 +320,28 @@
     min-width: 20px;
     text-align: center;
 }
+
+/* Theme overrides */
+.section-label, .chats-section-label { color: var(--text-dim); border-bottom:2px solid var(--border); letter-spacing:.5px; text-transform:uppercase; font-size:0.9rem; }
+.pending-match-card { background: var(--bg-soft); border:1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); }
+.match-avatar { border-radius: var(--radius-md); border:1px solid var(--border); }
+.avatar-fallback { background: var(--accent); color:#fff; }
+.match-name { color: var(--text); font-size:1.3rem; }
+.interest-tag { background: var(--bg-soft); color: var(--text-dim); border:1px solid var(--border); font-size:10px; }
+.more-interests { color: var(--text-dim); }
+.match-bio { color: var(--text-dim); }
+.reject-button { background: var(--danger); color:#fff; border:1px solid var(--danger); }
+.reject-button:hover { filter:brightness(1.1); }
+.accept-button { background: var(--success); color:#fff; border:1px solid var(--success); }
+.accept-button:hover { filter:brightness(1.1); }
+.chats-section-label { background: var(--bg-soft); }
+.no-chats { color: var(--text-dim); }
+.no-chats span { color: var(--text-dim); opacity:.7; }
+.chat-list-item { background: var(--bg-alt); border:1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); }
+.chat-list-item:hover { box-shadow: var(--shadow-md); }
+.avatar-placeholder { background: var(--accent); color:#fff; }
+.online-indicator { background: var(--success); border:2px solid var(--bg-alt); }
+.username { color: var(--accent); }
+.timestamp { color: var(--text-dim); opacity:.7; }
+.last-message { color: var(--text-dim); }
+.unread-badge { background: var(--accent); color:#fff; }
