@@ -1,6 +1,6 @@
-const API_BASE_URL = "http://localhost:5001/api";
-
 import { wrapPromise } from '../utils/loaderManager';
+
+const API_BASE_URL = "http://localhost:5001/api";
 
 // Generic API request function (wrapped so the global loader reflects network activity)
 const apiRequest = async (endpoint, options = {}) => {
