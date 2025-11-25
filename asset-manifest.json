@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.2f96209f.css",
-    "main.js": "/static/js/main.cc5449d1.js",
-    "static/js/453.d7446e4a.chunk.js": "/static/js/453.d7446e4a.chunk.js",
-    "index.html": "/index.html",
-    "main.2f96209f.css.map": "/static/css/main.2f96209f.css.map",
-    "main.cc5449d1.js.map": "/static/js/main.cc5449d1.js.map",
-    "453.d7446e4a.chunk.js.map": "/static/js/453.d7446e4a.chunk.js.map"
+    "main.css": "/Friend-Chat-App/static/css/main.2f96209f.css",
+    "main.js": "/Friend-Chat-App/static/js/main.4b4273d7.js",
+    "static/js/453.d7446e4a.chunk.js": "/Friend-Chat-App/static/js/453.d7446e4a.chunk.js",
+    "index.html": "/Friend-Chat-App/index.html",
+    "main.2f96209f.css.map": "/Friend-Chat-App/static/css/main.2f96209f.css.map",
+    "main.4b4273d7.js.map": "/Friend-Chat-App/static/js/main.4b4273d7.js.map",
+    "453.d7446e4a.chunk.js.map": "/Friend-Chat-App/static/js/453.d7446e4a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2f96209f.css",
-    "static/js/main.cc5449d1.js"
+    "static/js/main.4b4273d7.js"
   ]
 }
