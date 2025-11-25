@@ -2,22 +2,35 @@ import React, { useEffect, useState } from 'react';
 import './RightSidebar.css';
 import { matchingAPI } from '../../Services/api';
 import { useNavigate } from 'react-router-dom';
+import Skeleton from '../common/Skeleton';
+import { getCache, setCache } from '../../utils/dataCache';
 
 export default function RightSidebar() {
   const profile = JSON.parse(localStorage.getItem('currentUserProfile') || '{}');
   const userId = profile.userId;
   const [matches, setMatches] = useState([]);
   const [lostItems, setLostItems] = useState([]);
+  const [loadingMatches, setLoadingMatches] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!userId) return;
+    const cacheKey = `matches:${userId}`;
+    const cached = getCache(cacheKey);
+    if (cached) {
+      setMatches(cached.slice(0,4));
+    }
+    setLoadingMatches(!cached);
     (async () => {
       try {
         const res = await matchingAPI.getPendingMatches(userId);
-        setMatches(Array.isArray(res) ? res.slice(0, 4) : []);
+        const list = Array.isArray(res) ? res.slice(0, 4) : [];
+        setMatches(list);
+        setCache(cacheKey, list);
       } catch (e) {
-        setMatches([]);
+        if (!cached) setMatches([]);
+      } finally {
+        setLoadingMatches(false);
       }
     })();
   }, [userId]);
@@ -63,7 +76,11 @@ export default function RightSidebar() {
         <div className="rs-section-header">
           <span>Suggested matches</span>
         </div>
-        {matches.length === 0 ? (
+        {loadingMatches && !matches.length ? (
+          <div style={{ padding: '0.5rem' }}>
+            <Skeleton rows={3} height={48} gap={10} />
+          </div>
+        ) : matches.length === 0 ? (
           <div className="rs-empty">No matches yet. Update interests to discover people.</div>
         ) : (
           <ul className="rs-list">

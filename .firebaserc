@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "usiu-connect-539f5"
-  }
+    "default": "friend-chat-app-77edb"
+  },
+  "targets": {},
+  "etags": {}
 }

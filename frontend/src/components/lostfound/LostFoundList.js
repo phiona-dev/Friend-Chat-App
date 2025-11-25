@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { wrapPromise } from '../../utils/loaderManager';
+import { API_BASE, IMAGE_BASE } from '../../config';
 import Navbar from '../../components/navigation/bottom-navbar';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
-const IMAGE_BASE = API_BASE.replace('/api', ''); // Remove /api for image URLs
+// Use central API/IMAGE base
+
+import Skeleton from '../common/Skeleton';
 
 export default function LostFoundList() {
   const [items, setItems] = useState([]);
@@ -134,8 +136,14 @@ export default function LostFoundList() {
       </div>
 
       {loading && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text)', fontSize: '1.125rem' }}>
-          Loading items...
+        <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text)', fontSize: '1rem' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+            <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))' }}>
+              <Skeleton rows={3} height={120} gap={12} />
+              <Skeleton rows={3} height={120} gap={12} />
+              <Skeleton rows={3} height={120} gap={12} />
+            </div>
+          </div>
         </div>
       )}
       {error && (

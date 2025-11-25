@@ -55,54 +55,59 @@ function AppShell() {
   return (
     <>
       <TopLoadingBar loading={routeLoading} />
-      <Layout>
-        <Routes>
-          {/* Public routes */}
-          <Route path='/welcome' element={<Welcomepage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/quick-login' element={<QuickLogin />} />
-          <Route path='/verify' element={<VerificationPage />} />
-          <Route path='/create-profile' element={<CreateProfilePage />} />
-          
-          {/* Protected routes - Posts is now home */}
-          <Route path='/' element={
+      <Routes>
+        {/* Public routes (rendered without the app chrome) */}
+        <Route path='/welcome' element={<Welcomepage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/quick-login' element={<QuickLogin />} />
+        <Route path='/verify' element={<VerificationPage />} />
+        <Route path='/create-profile' element={<CreateProfilePage />} />
+
+        {/* All protected routes are wrapped with the app Layout so nav/sidebar are only visible when inside Layout */}
+        <Route path='/' element={<Layout>
             <ProtectedRoute>
               <GeneralPostsFeed />
             </ProtectedRoute>
-          } />
-          <Route path='/posts' element={<Navigate to="/" replace />} />
-          <Route path='/chats' element={
+          </Layout>} />
+
+        <Route path='/posts' element={<Navigate to="/" replace />} />
+
+        <Route path='/chats' element={<Layout>
             <ProtectedRoute>
               <ChatPage />
             </ProtectedRoute>
-          } />
-          <Route path='/profile' element={
+          </Layout>} />
+
+        <Route path='/profile' element={<Layout>
             <ProtectedRoute>
               <ProfilePage />
             </ProtectedRoute>
-          } />
-          <Route path='/matching' element={
+          </Layout>} />
+
+        <Route path='/matching' element={<Layout>
             <ProtectedRoute>
               <MatchingPage />
             </ProtectedRoute>
-          } />
-          <Route path='/lost-found' element={
+          </Layout>} />
+
+        <Route path='/lost-found' element={<Layout>
             <ProtectedRoute>
               <LostFoundList />
             </ProtectedRoute>
-          } />
-          <Route path='/lostfound/new' element={
+          </Layout>} />
+
+        <Route path='/lostfound/new' element={<Layout>
             <ProtectedRoute>
               <LostFoundForm />
             </ProtectedRoute>
-          } />
-          <Route path='/lostfound/:id' element={
+          </Layout>} />
+
+        <Route path='/lostfound/:id' element={<Layout>
             <ProtectedRoute>
               <LostFoundDetail />
             </ProtectedRoute>
-          } />
-        </Routes>
-      </Layout>
+          </Layout>} />
+      </Routes>
     </>
   );
 }

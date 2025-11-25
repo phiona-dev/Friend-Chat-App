@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "friend-chat-app-77edb",
     "public": "frontend/build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [

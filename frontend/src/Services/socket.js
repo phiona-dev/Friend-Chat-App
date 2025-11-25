@@ -9,9 +9,19 @@ class SocketService {
     connect() {
         if (this.socket) return this.socket;
 
-        this.socket = io("http://localhost:5000", {
-            transports: ["websocket"],
-        });
+        // Use central config for socket origin
+        try {
+            // import here to avoid circular import at module load time in some bundlers
+            // (Services import order can vary). Dynamically require the config.
+            // Note: this works in the browser build because imports are static —
+            // we keep it defensive here.
+            // eslint-disable-next-line import/no-unresolved
+            const { SOCKET_ORIGIN } = require('../config');
+            this.socket = io(SOCKET_ORIGIN, { transports: ['websocket'] });
+        } catch (err) {
+            // Fallback: current origin
+            this.socket = io(window.location.origin, { transports: ['websocket'] });
+        }
 
         this.socket.on("connect", () => {
             console.log("Connected to server");

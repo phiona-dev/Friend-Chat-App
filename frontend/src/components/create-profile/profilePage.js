@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './profilePage.css';
+import Skeleton from '../common/Skeleton';
 import { userAPI } from '../../Services/api';
 import Navbar from '../navigation/bottom-navbar';
 
@@ -17,8 +18,11 @@ export default function ProfilePage() {
       try {
         // Try loading from backend first
         //const userId = 'user1'; // Use actual user ID
+        // Prefer the cached profile in localStorage, otherwise fall back to the
+        // authenticated `currentUserId` saved at login (QuickLogin sets this).
         const currentUserProfile = JSON.parse(localStorage.getItem('currentUserProfile') || '{}');
-        const userId = currentUserProfile.userId || 'user1';
+        const fallbackId = localStorage.getItem('currentUserId');
+        const userId = currentUserProfile.userId || fallbackId || 'user1';
         const data = await userAPI.getProfile(userId);
         setProfile(data);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -29,6 +33,19 @@ export default function ProfilePage() {
           const saved = localStorage.getItem(STORAGE_KEY);
           if (saved) {
             setProfile(JSON.parse(saved));
+          }
+          else {
+            // As a last resort, try to load by currentUserId (if present)
+            const fallbackId = localStorage.getItem('currentUserId');
+            if (fallbackId) {
+              try {
+                const data = await userAPI.getProfile(fallbackId);
+                setProfile(data);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+              } catch (e) {
+                // ignore — we'll fallthrough to default empty profile
+              }
+            }
           }
           
         } catch (e) {
@@ -118,7 +135,19 @@ export default function ProfilePage() {
   if (loading || !profile) {
     return (
       <div className="profile-page">
-        <p>Loading profile...</p>
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: '1rem' }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            <Skeleton circle={true} width={96} height={96} />
+            <div style={{ flex: 1 }}>
+              <Skeleton width="50%" height={18} />
+              <div style={{ height: 8 }} />
+              <Skeleton width="30%" height={14} />
+            </div>
+          </div>
+          <div style={{ marginTop: 18 }}>
+            <Skeleton rows={6} height={14} gap={12} />
+          </div>
+        </div>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './LostFoundDetail.css'; // Import the CSS file
+import Skeleton from '../common/Skeleton';
 import { chatAPI } from '../../Services/api'; // Adjust path as needed
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
@@ -126,8 +127,18 @@ export default function LostFoundDetail() {
   // Loading State
   if (loading) return (
     <div className="loading-container">
-      <div style={{ color: 'white', fontSize: '1.125rem' }}>
-        Loading item details...
+      <div style={{ width: '100%', maxWidth: 900 }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <Skeleton circle width={56} height={56} />
+          <div style={{ flex: 1 }}>
+            <Skeleton width="70%" height={18} />
+            <div style={{ height: 8 }} />
+            <Skeleton width="45%" height={14} />
+          </div>
+        </div>
+        <div style={{ marginTop: 18 }}>
+          <Skeleton rows={8} height={12} />
+        </div>
       </div>
     </div>
   );

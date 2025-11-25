@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { postsAPI } from '../../Services/api';
 import './PostsTab.css';
+import Skeleton from '../common/Skeleton';
+import { getCache, setCache } from '../../utils/dataCache';
 
 const PostsTab = () => {
   const profile = JSON.parse(localStorage.getItem('currentUserProfile') || '{}');
@@ -18,9 +20,18 @@ const PostsTab = () => {
 
   const loadPosts = async () => {
     try {
-      setLoading(true);
+      const cacheKey = `posts:list:1:50:${search || ''}`;
+      const cached = getCache(cacheKey);
+      if (cached) {
+        setPosts(cached.items || cached);
+        setLoading(false);
+      } else {
+        setLoading(true);
+      }
       const res = await postsAPI.list(1, 50, search);
-      setPosts(res.items || []);
+      const items = res.items || [];
+      setPosts(items);
+      setCache(cacheKey, { items });
     } catch (err) {
       setError('Failed to load posts');
     } finally {
@@ -105,7 +116,11 @@ const PostsTab = () => {
         <button onClick={loadPosts}>Search</button>
       </div>
 
-      {loading ? <p>Loading posts...</p> : error ? <p className="error">{error}</p> : (
+      {loading && !posts.length ? (
+        <div>
+          <Skeleton rows={3} height={120} gap={12} />
+        </div>
+      ) : error ? <p className="error">{error}</p> : (
         <ul className="post-list">
           {posts.map(post => (
             <li key={post._id} className="post-item">

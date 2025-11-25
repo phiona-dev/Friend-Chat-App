@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { postsAPI } from '../../Services/api';
+import { IMAGE_BASE } from '../../config';
 import './GeneralPostsFeed.css';
 import HomeBannerSlider from './HomeBannerSlider';
+import Skeleton from '../common/Skeleton';
 
 const CATEGORIES = ['All','Memes','Events','Questions','Announcements','General'];
 
@@ -131,7 +133,15 @@ export default function GeneralPostsFeed() {
 
   return (
     <div className="feed-container">
-      <HomeBannerSlider />
+      {loading && posts.length === 0 ? (
+        <div style={{ padding: '1rem 0' }}>
+          <Skeleton height={160} rows={1} />
+          <div style={{ height: 12 }} />
+          <Skeleton width="30%" height={12} />
+        </div>
+      ) : (
+        <HomeBannerSlider />
+      )}
       <header className="feed-header">
         <h2>Campus Feed</h2>
         <form onSubmit={handleSearch} className="search-bar">
@@ -159,17 +169,46 @@ export default function GeneralPostsFeed() {
       {error && <div className="error-banner">{error}</div>}
 
       <main className="posts-feed">
-        {posts.map(post => (
-          <PostCard
-            key={post._id}
-            post={post}
-            onLike={() => handleLike(post._id)}
-            onComment={(text) => handleComment(post._id, text)}
-            onReport={() => handleReport(post._id)}
-          />
-        ))}
+        {loading && posts.length === 0 ? (
+          <>
+            {[1,2,3].map(i => (
+              <div key={i} className="post-card" style={{ opacity: 0.9 }}>
+                <div className="post-meta">
+                  <span className="pseudonym"><Skeleton width={90} height={12} /></span>
+                  <span className="dot">•</span>
+                  <span className="time"><Skeleton width={60} height={12} /></span>
+                </div>
+                <div style={{ margin: '0.5rem 0' }}>
+                  <Skeleton width="70%" height={18} />
+                </div>
+                <div className="post-content" style={{ display: 'flex', gap: 12 }}>
+                  <div style={{ flex: 1 }}>
+                    <Skeleton rows={2} height={12} />
+                  </div>
+                  <div style={{ width: 120 }}>
+                    <Skeleton width={120} height={80} />
+                  </div>
+                </div>
+                <div style={{ marginTop: 12 }}>
+                  <Skeleton width="40%" height={12} />
+                </div>
+              </div>
+            ))}
+            <div ref={observerRef} style={{ height: 1 }} />
+          </>
+        ) : (
+          posts.map(post => (
+            <PostCard
+              key={post._id}
+              post={post}
+              onLike={() => handleLike(post._id)}
+              onComment={(text) => handleComment(post._id, text)}
+              onReport={() => handleReport(post._id)}
+            />
+          ))
+        )}
         <div ref={observerRef} style={{ height: 1 }} />
-        {loading && <div className="loading">Loading...</div>}
+        {loading && posts.length > 0 && <div style={{ padding: '1rem 0' }}><Skeleton rows={1} height={14} /></div>}
         {!hasMore && posts.length > 0 && <div className="end">End of feed</div>}
       </main>
 
@@ -219,7 +258,7 @@ function PostCard({ post, onLike, onComment, onReport }) {
   // Ensure imageUrl is absolute if needed
   let imageSrc = post.imageUrl;
   if (imageSrc && imageSrc.startsWith('/uploads')) {
-    imageSrc = `http://localhost:5001${imageSrc}`;
+    imageSrc = `${IMAGE_BASE}${imageSrc}`;
   }
   return (
     <article className="post-card">

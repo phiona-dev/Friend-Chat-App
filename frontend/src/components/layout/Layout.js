@@ -4,6 +4,7 @@ import '../layout/Layout.css';
 import RightSidebar from '../sidebar/RightSidebar';
 
 export default function Layout({ children }) {
+  const profile = JSON.parse(localStorage.getItem('currentUserProfile') || 'null');
   return (
     <div className="app-shell">
       <NavBar />
@@ -15,9 +16,11 @@ export default function Layout({ children }) {
           <main className="shell-center-content">
             {children}
           </main>
-          <aside className="shell-right-sidebar" aria-label="Highlights">
-            <RightSidebar />
-          </aside>
+          {profile && profile.userId && (
+            <aside className="shell-right-sidebar" aria-label="Highlights">
+              <RightSidebar />
+            </aside>
+          )}
         </div>
       </div>
     </div>

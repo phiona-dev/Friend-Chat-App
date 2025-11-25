@@ -53,6 +53,7 @@ app.use('/api/chats', require('./routes/chats'));
 app.use('/api/matches', require('./routes/matches'));
 app.use('/api/users', require('./routes/user'));
 app.use('/api/posts', require('./routes/posts'));
+// auth routes removed to restore original client-side Firebase auth flow
 
 // Socket.io connection handler
 io.on("connection", (socket) => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ChatWindow from '../components/chat/chat-window/ChatWindow';
 import ChatList from '../components/chat/chat-list/ChatList';
+import Skeleton from '../components/common/Skeleton';
 import { chatAPI, matchingAPI } from '../Services/api';
 import { socketService } from '../Services/socket';
 
@@ -421,8 +422,19 @@ const App = () => {
   if (loading && chats.length === 0) {
     return (
       <div className="loading-screen">
-        <div className="loading-spinner"></div>
-        <p>Loading your chats...</p>
+        <div style={{ width: '100%', maxWidth: 720 }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <Skeleton circle={true} width={48} height={48} />
+            <div style={{ flex: 1 }}>
+              <Skeleton width="60%" height={14} />
+              <div style={{ height: 8 }} />
+              <Skeleton width="40%" height={12} />
+            </div>
+          </div>
+          <div style={{ marginTop: 20 }}>
+            <Skeleton rows={6} height={12} />
+          </div>
+        </div>
       </div>
     );
   }

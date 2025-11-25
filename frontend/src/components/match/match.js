@@ -2,12 +2,21 @@ import React, { useEffect, useState } from 'react';
 import './match.css';
 import { matchingAPI } from '../../Services/api';
 import { useNavigate } from 'react-router-dom';
-
-// Resolve current user id from saved profile (same as RightSidebar)
-const storedProfile = JSON.parse(localStorage.getItem('currentUserProfile') || '{}');
-const CURRENT_USER_ID = storedProfile.userId;
+import Skeleton from '../common/Skeleton';
+import { getCache, setCache } from '../../utils/dataCache';
 
 export default function MatchingPage() {
+  // Resolve current user id from saved profile or fallback to currentUserId
+  const resolveUserId = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('currentUserProfile') || '{}');
+      if (stored && stored.userId) return stored.userId;
+    } catch (e) { /* ignore */ }
+    return localStorage.getItem('currentUserId');
+  };
+
+  const [currentUserId] = useState(resolveUserId);
+
   const [matches, setMatches] = useState([]);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -17,22 +26,32 @@ export default function MatchingPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!CURRENT_USER_ID) {
+    const uid = currentUserId;
+    if (!uid) {
       setError('Please create your profile first so we can match you.');
       setLoading(false);
       return;
     }
 
+    const cacheKey = `matches:${uid}`;
+    const cached = getCache(cacheKey);
+    if (cached) {
+      setMatches(cached);
+      setLoading(false);
+    }
+
     let cancelled = false;
     (async () => {
       try {
-        const res = await matchingAPI.getPendingMatches(CURRENT_USER_ID);
+        const res = await matchingAPI.getPendingMatches(uid);
         if (cancelled) return;
-        setMatches(Array.isArray(res) ? res : []);
+        const list = Array.isArray(res) ? res : [];
+        setMatches(list);
+        setCache(cacheKey, list);
       } catch (e) {
         if (cancelled) return;
         console.error('Failed to load matches', e);
-        setError('Failed to load matches. Please try again later.');
+        if (!cached) setError('Failed to load matches. Please try again later.');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -44,7 +63,7 @@ export default function MatchingPage() {
   const handleAccept = async (match) => {
     if (!match || isAnimating) return;
     try {
-      await matchingAPI.acceptMatch(match.matchId, CURRENT_USER_ID);
+      await matchingAPI.acceptMatch(match.matchId, currentUserId);
       setMatches(prev => prev.filter(m => m.matchId !== match.matchId));
       setIndex(0);
       navigate('/chats');
@@ -57,7 +76,7 @@ export default function MatchingPage() {
   const handleSkip = async (match) => {
     if (!match || isAnimating) return;
     try {
-      await matchingAPI.rejectMatch(match.matchId, CURRENT_USER_ID);
+      await matchingAPI.rejectMatch(match.matchId, currentUserId);
     } catch (e) {
       console.warn('Failed to send reject to server, ignoring', e);
     }
@@ -77,10 +96,13 @@ export default function MatchingPage() {
     }, 320);
   };
 
-  if (loading) {
+  if (loading && !matches.length) {
     return (
       <div className="profiles-page">
-        <p>Loading matches...</p>
+        <div style={{ maxWidth: 560, margin: '0 auto', padding: '1rem' }}>
+          <Skeleton rows={2} height={220} gap={16} />
+          <Skeleton rows={3} height={18} gap={8} style={{ marginTop: 12 }} />
+        </div>
       </div>
     );
   }

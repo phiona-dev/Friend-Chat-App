@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
 import { auth, db } from '../../firebase';
+import { firebaseConfig } from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -11,6 +12,30 @@ const QuickLogin = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Dev helper: clear stored auth/profile state to avoid stale credentials
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        localStorage.removeItem('currentUserId');
+        localStorage.removeItem('authToken');
+        console.info('QuickLogin (dev): cleared localStorage currentUserId/authToken');
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, []);
+
+  // Watchdog: if login stays in loading state for long, show helpful hint
+  React.useEffect(() => {
+    if (!loading) return undefined;
+    const watchdog = setTimeout(() => {
+      console.warn('QuickLogin: login appears stuck — possible network block or slow connection');
+      setLoading(false);
+      setError(prev => prev || 'Login is taking too long. Check your network or disable browser extensions (adblock/privacy).');
+    }, 20000); // 20s
+    return () => clearTimeout(watchdog);
+  }, [loading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,14 +66,35 @@ const QuickLogin = () => {
       }
       navigate('/');
     } catch (err) {
-      if (err.code === 'auth/wrong-password') {
+      // Verbose logging for debugging auth/invalid-credential and other Firebase errors
+      try {
+        console.error('QuickLogin error (verbose):', {
+          message: err?.message,
+          code: err?.code,
+          name: err?.name,
+          customData: err?.customData,
+          stack: err?.stack,
+          toString: err?.toString && err.toString()
+        });
+      } catch (logErr) {
+        console.error('QuickLogin logging failed', logErr, err);
+      }
+
+      const code = err?.code || '';
+      const msg = err?.message || '';
+
+      if (msg.toLowerCase().includes('blocked') || msg.includes('ERR_BLOCKED_BY_CLIENT')) {
+        setError('Network requests to Firebase are being blocked by a browser extension. Try disabling adblocker or testing in an Incognito window.');
+      } else if (code === 'auth/wrong-password') {
         setError('Incorrect password');
-      } else if (err.code === 'auth/user-not-found') {
+      } else if (code === 'auth/user-not-found') {
         setError('No account found for this email. Try signing up.');
-      } else if (err.code === 'auth/too-many-requests') {
+      } else if (code === 'auth/too-many-requests') {
         setError('Too many attempts. Try again later.');
+      } else if (code === 'auth/invalid-credential') {
+        setError('Invalid credentials supplied to Firebase. Check that the Firebase project config matches the intended project and that the user exists.');
       } else {
-        setError('Login failed');
+        setError(msg ? `${msg} ${code ? `(${code})` : ''}` : 'Login failed');
       }
     } finally {
       setLoading(false);
@@ -58,6 +104,11 @@ const QuickLogin = () => {
   return (
     <div className="login-container">
       <div className="login-card">
+        {process.env.NODE_ENV !== 'production' && (
+          <div style={{background:'#f7f7f7',border:'1px solid #eee',padding:'6px 8px',borderRadius:6,marginBottom:'0.75rem',fontSize:'0.85rem'}}>
+            Dev Firebase: <strong>{firebaseConfig.projectId}</strong> — <span style={{opacity:0.8}}>{firebaseConfig.authDomain}</span>
+          </div>
+        )}
         <div className="logo-container">
           <img src="/logo.png" alt="Friend Chat App Logo" className="app-logo" />
         </div>
