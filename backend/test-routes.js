@@ -11,7 +11,7 @@ const testRoutes = async () => {
   try {
     console.log('Testing chat routes functionality...');
     
-    // We'll test our routes by creating data and checking responses
+    //
     console.log('Chat routes are set up and ready!');
     console.log('Available endpoints:');
     console.log('   GET    /api/chats/:userId');

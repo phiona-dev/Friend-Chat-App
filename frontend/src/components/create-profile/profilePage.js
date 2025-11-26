@@ -157,7 +157,7 @@ export default function ProfilePage() {
             />
           </div>
 
-          <div className="field-group">
+          {/*<div className="field-group">
             <label>Email</label>
             <input
               type="email"
@@ -165,7 +165,7 @@ export default function ProfilePage() {
               onChange={handleChange('email')}
               placeholder="your.email@example.com"
             />
-          </div>
+          </div>*/}
 
           <div className="field-group">
             <label>About</label>

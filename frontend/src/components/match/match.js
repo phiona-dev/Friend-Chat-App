@@ -281,9 +281,6 @@ export default function MatchingPage() {
             </button>
           </div>
 
-          {/* Swipe Hint 
-          <p className="swipe-hint">Swipe or click buttons</p>*/}
-          {/* Progress */}
           <div className="progress">
             Profile {currentIndex + 1} of {unprocessedProfiles.length}
           </div>

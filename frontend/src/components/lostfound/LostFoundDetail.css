@@ -140,14 +140,20 @@
 
 .contact-button {
   padding: 0.75rem 1.5rem;
-  background: var(--primary);
-  color: black;
+  background: #2d6cdf;
+  color: #fff;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   min-width: 120px;
   transition: opacity 0.2s;
+}
+
+.contact-button:hover {
+  background-color: #fff;
+  color: #2d6cdf;
+  border: 2px solid #2d6cdf
 }
 
 .contact-button:disabled {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "./LostFoundForm.css"
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
 
@@ -83,8 +84,7 @@ export default function LostFoundForm() {
 
       const res = await fetch(`${API_BASE}/lostfound`, {
         method: 'POST',
-        body: formData, // Use FormData instead of JSON
-        // Don't set Content-Type header - browser will set it with boundary
+        body: formData, 
       });
       
       const data = await res.json();
@@ -356,8 +356,9 @@ export default function LostFoundForm() {
               type="submit"
               disabled={submitting}
               style={{ flex: 2 }}
+              className='submit-button'
             >
-              {submitting ? 'Submitting...' : '✅ Submit Report'}
+              {submitting ? 'Submitting...' : 'Submit Report'}
             </button>
           </div>
         </form>

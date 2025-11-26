@@ -4,7 +4,7 @@ require('dotenv').config();
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
 const User = require('./models/User');
-const LostFound = require('./models/LostFoundItem'); // Add this import
+const LostFound = require('./models/LostFoundItem'); 
 
 const populateTestData = async () => {
   try {

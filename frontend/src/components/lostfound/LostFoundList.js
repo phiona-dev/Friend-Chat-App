@@ -294,7 +294,7 @@ export default function LostFoundList() {
           <Link to="/lostfound/new" style={{
             display: 'inline-block',
             padding: '0.75rem 1.5rem',
-            background: 'var(--primary)',
+            background: '#2d6cdf',
             color: 'white',
             borderRadius: 'var(--radius)',
             fontWeight: 600,

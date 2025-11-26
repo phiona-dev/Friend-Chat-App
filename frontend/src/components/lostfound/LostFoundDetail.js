@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import './LostFoundDetail.css'; // Import the CSS file
-import { chatAPI } from '../../Services/api'; // Adjust path as needed
+import './LostFoundDetail.css'; 
+import { chatAPI } from '../../Services/api'; 
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5000/api';
 

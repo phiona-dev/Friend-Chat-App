@@ -70,3 +70,9 @@
   margin-top: 1rem; 
   cursor: pointer;
 }
+
+.complete-btn:hover {
+  border: 2px solid #2d6cdf;
+  background: white;
+  color: #2d6cdf
+}
