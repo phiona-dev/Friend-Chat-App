@@ -1,26 +1,22 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import UserProfile from "./components/UserProfile";
-import GeneralPosts from "./components/GeneralPosts";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Posts from "./components/Posts";
+import "./App.css";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <UserProfile />
-              <GeneralPosts />
-            </div>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <div>
+        <nav className="navbar">
+          <Link to="/posts">Posts</Link>
+        </nav>
+
+        <Routes>
+          <Route path="/posts" element={<Posts />} />
+        </Routes>
+      </div>
     </Router>
   );
 }
 
 export default App;
-
